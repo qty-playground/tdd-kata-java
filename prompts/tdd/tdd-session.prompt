@@ -2,33 +2,33 @@
 
 ## ☕ Java SE TDD Workflow
 
-### 🎯 當收到新需求時的反思流程  
-**在進入任何 TDD 階段前，必須先進行需求分析**
+### 🎯 Requirements Analysis Flow When New Requirements Received  
+**Requirements analysis must be performed before entering any TDD phase**
 
-#### 必要反思檢查點：
+#### Mandatory Reflection Checkpoints:
 ```
-❓ 反思問題：
-1. 這個需求是否包含多個獨立的測試案例？
-2. 如果是，應該拆解成幾個 TDD cycles？
-3. 每個 cycle 要測試什麼具體的方法簽名和輸入→輸出？
+❓ Analysis Questions:
+1. Does this requirement contain multiple independent test cases?
+2. If yes, how many TDD cycles should it be broken into?
+3. What specific method signatures and input→output should each cycle test?
 
-📋 分析輸出格式：
+📋 Analysis Output Format:
 TDD Cycles Planning:
-Cycle 1: [測試方法描述] - Input: X, Expected: Y
-Cycle 2: [測試方法描述] - Input: X, Expected: Y  
+Cycle 1: [test method description] - Input: X, Expected: Y
+Cycle 2: [test method description] - Input: X, Expected: Y  
 ...
-總計: N 輪 cycles
-當前處理: Cycle 1
+Total: N cycles
+Current: Cycle 1
 ```
 
-#### 🚨 需要拆解的需求識別：
-- **多個具體範例**: "數字 3, 6, 9 都應該回傳 Foo" → 3個 test methods
-- **不同規則組合**: "基本規則 + Foo規則 + 複合規則" → 至少3個 test cycles  
-- **邊界條件列舉**: "正數、負數、零的處理" → 3個 test cases
+#### 🚨 Requirements That Need Decomposition:
+- **Multiple concrete examples**: "Numbers 3, 6, 9 should all return Foo" → 3 test methods
+- **Different rule combinations**: "Basic rules + Foo rules + Compound rules" → At least 3 test cycles  
+- **Boundary condition enumeration**: "Handle positive, negative, zero" → 3 test cases
 
-#### ✅ 單一案例的需求：
-- **一個具體輸入輸出**: "當輸入3時應該回傳Foo" → 1個 test method
-- **單一規則驗證**: "驗證email格式檢查" → 1個 test cycle
+#### ✅ Single Case Requirements:
+- **One concrete input-output**: "When input is 3, should return Foo" → 1 test method
+- **Single rule validation**: "Verify email format checking" → 1 test cycle
 
 ## State Machine Control
 
@@ -39,106 +39,194 @@ Cycle 2: [測試方法描述] - Input: X, Expected: Y
 ## Current State Detection
 
 ### Determine Current Phase
-檢查當前狀況來決定應該在哪個階段：
+Check current situation to decide which phase to be in:
 
-1. **進入 Red Phase 的條件：**
-   - 已完成需求分析，明確本輪要測試的案例
-   - 準備開始某一個具體的 TDD cycle
-   - 上一個 refactor 階段完成，進入下一輪 cycle
-   - 有明確的單一測試案例要實作
+1. **Enter Red Phase when:**
+   - Requirements analysis completed, current test case is clear
+   - Ready to start a specific TDD cycle
+   - Previous refactor phase completed, entering next cycle
+   - Have a clear single test case to implement
 
-2. **進入 Green Phase 的條件：**
-   - Red phase 完成（有失敗的測試）
-   - src/test/java/ 目錄下有新的失敗測試
-   - 需要實作程式碼讓測試通過
+2. **Enter Green Phase when:**
+   - Red phase completed (have failing test)
+   - New failing test exists in src/test/java/ directory
+   - Need to implement code to make tests pass
 
-3. **進入 Refactor Phase 的條件：**
-   - Green phase 完成（測試通過）
-   - 所有測試都是綠色的
-   - 程式碼有改善空間（重複、命名、結構）
+3. **Enter Refactor Phase when:**
+   - Green phase completed (tests pass)
+   - All tests are green
+   - Code has improvement opportunities (duplication, naming, structure)
 
-4. **進入 Wait State 的條件：**
-   - Refactor phase 完成
-   - 沒有新的 business rule
-   - 沒有明顯的程式碼改善需求
+4. **Enter Wait State when:**
+   - Refactor phase completed
+   - No new business rules
+   - No obvious code improvement needs
 
-## Phase Transition Commands
+## Phase Transition Commands - STRICT ENFORCEMENT
 
-### 需求分析和規劃
+### 🚨 CRITICAL: Every Phase Completion Must Have COMMIT Report
+**All phases must submit commit to record progress status when completed**
+
+### Requirements Analysis and Planning
 ```
 🔍 REQUIREMENTS ANALYSIS:
-1. 分析收到的需求是否包含多個測試案例
-2. 拆解成獨立的輸入→輸出案例
-3. 規劃要進行幾輪 TDD cycles
-4. 聚焦到第一個要處理的案例
-輸出：TDD Cycles Planning 清單
+1. Analyze if received requirements contain multiple test cases
+2. Decompose into independent input→output cases
+3. Plan how many TDD cycles are needed
+4. Focus on the first case to handle
+Output: TDD Cycles Planning list
+
+📝 MANDATORY COMMIT:
+git commit --allow-empty -m "plan: TDD cycles planning completed
+
+📋 Planning Report:
+1. Current phase and what was done: PLANNING PHASE - Requirements analysis completed
+2. Discoveries and problems encountered: [List discovered case count and complexity]
+3. Next phase and planned actions: RED PHASE - Start first test case
+Cycles: [List all cycles]
+Current: Cycle 1 - [Specific case]
+"
 ```
 
-### 啟動 Red Phase
+### Start Red Phase
 ```
-現在進入 RED PHASE - Cycle X
-使用 @prompts/tdd/red-phase.prompt
-目標：為當前 cycle 的案例寫失敗的 JUnit 測試
-當前案例：[具體輸入] → [預期輸出]
-執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）確認測試失敗
+Entering RED PHASE - Cycle X
+Use @prompts/tdd/red-phase.prompt
+Goal: Write failing JUnit test for current cycle case
+Current case: [Specific input] → [Expected output]
+Execute: ./mvnw test or ./gradlew test (prefer wrapper) to confirm test failure
+
+📝 MANDATORY COMMIT WHEN COMPLETE:
+git add .
+git commit -m "red: failing test for [specific case] 
+
+🔴 Red Phase Report:
+1. Current phase and what was done: RED PHASE - Failing test completed
+2. Discoveries and problems encountered: [Test failure reasons, compilation issues, etc.]
+3. Next phase and planned actions: GREEN PHASE - Implement minimal code to make test pass
+Test created: [test method name]
+Failure reason: [Specific failure reason]
+"
 ```
 
-### 啟動 Green Phase  
+### Start Green Phase  
 ```
-現在進入 GREEN PHASE
-使用 @prompts/tdd/green-phase.prompt  
-目標：最簡實作讓 JUnit 測試通過
-執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）確認測試通過
+Entering GREEN PHASE
+Use @prompts/tdd/green-phase.prompt  
+Goal: Minimal implementation to make JUnit tests pass
+Execute: ./mvnw test or ./gradlew test (prefer wrapper) to confirm tests pass
+
+📝 MANDATORY COMMIT WHEN COMPLETE:
+git add .
+git commit -m "green: minimal implementation for [specific case]
+
+🟢 Green Phase Report:
+1. Current phase and what was done: GREEN PHASE - Minimal implementation completed
+2. Discoveries and problems encountered: [Implementation discoveries, technical choices, etc.]
+3. Next phase and planned actions: REFACTOR PHASE - Mandatory code review
+Implementation: [Implemented methods/classes]
+All tests: ✅ PASSING
+"
 ```
 
-### 啟動 Refactor Phase
+### Start Refactor Phase - 🚨 NEVER SKIP THIS PHASE
 ```
-現在進入 REFACTOR PHASE
-使用 @prompts/tdd/refactor-phase.prompt
-目標：改善程式碼品質，保持 JUnit 測試通過
-執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）頻繁確認測試仍通過
+Entering REFACTOR PHASE - ⚠️ MANDATORY PHASE
+Use @prompts/tdd/refactor-phase.prompt
+Goal: Mandatory code review + Optional code improvements
+Execute: ./mvnw test or ./gradlew test (prefer wrapper) frequently to confirm tests still pass
+
+🚨 CRITICAL RULE: This phase must never be skipped, even if no refactoring is done, code review is mandatory
+
+📝 MANDATORY COMMIT (choose one):
+# If refactoring done
+git add .
+git commit -m "refactor: improve code quality
+
+🔧 Refactor Phase Report:
+1. Current phase and what was done: REFACTOR PHASE - Refactoring completed
+2. Discoveries and problems encountered: [Refactoring discoveries, improvements made]
+3. Next phase and planned actions: [NEXT RED PHASE for Cycle X+1 / WAIT STATE]
+🔍 Code Review: ✅ DONE
+Improvements: [Specific improvements made]
+All tests: ✅ PASSING
+"
+
+# If no refactoring needed
+git commit --allow-empty -m "refactor: code review completed - no changes needed
+
+🔧 Refactor Phase Report:
+1. Current phase and what was done: REFACTOR PHASE - Code review completed
+2. Discoveries and problems encountered: [Code review findings]
+3. Next phase and planned actions: [NEXT RED PHASE for Cycle X+1 / WAIT STATE]
+🔍 Code Review: ✅ DONE
+Decision: No refactoring - [Specific reasons]
+Code status: [Code status assessment]
+All tests: ✅ PASSING
+"
 ```
 
-### 等待新規則
+### Cycle Completion Check
 ```
-TDD CYCLE COMPLETE
-等待新的 business rule 或問題探索
-準備進入下一個 Red Phase
+📋 CYCLE COMPLETION CHECK - MANDATORY:
+Check if there are unhandled test cases:
+- If yes: Enter next RED PHASE for next cycle
+- If no: Enter WAIT STATE
+
+📝 MANDATORY SESSION STATUS COMMIT:
+git commit --allow-empty -m "session: TDD cycle [X] completed
+
+📊 Session Status Report:
+1. Current phase and what was done: CYCLE [X] COMPLETE
+2. Discoveries and problems encountered: [Overall cycle insights]
+3. Next phase and planned actions: [NEXT CYCLE / WAIT FOR NEW REQUIREMENTS]
+Completed cycles: [X / Total]
+Remaining cycles: [List remaining cases or NONE]
+Overall progress: [Overall progress assessment]
+"
+```
+
+### Wait for New Rules
+```
+🎯 WAIT STATE - Waiting for New Requirements
+TDD SESSION READY
+Waiting for new business rules or problem exploration
+Ready to start new requirements analysis
 ```
 
 ## Session Management
 
-### 當前會話狀態
+### Current Session State
 - Main Class: `src/main/java/com/example/ExampleService.java`
 - Test Class: `src/test/java/com/example/ExampleServiceTest.java`  
 - Current Phase: `[PLANNING|RED|GREEN|REFACTOR|WAITING]`
 - Current Cycle: `Cycle X / Total Y cycles`
-- Current Test Case: `具體的輸入 → 預期輸出`
-- Remaining Cases: `剩餘要處理的案例列表`
+- Current Test Case: `Specific input → Expected output`
+- Remaining Cases: `List of remaining cases to handle`
 - Build Tool: `[Maven|Gradle]`
-- Java Version: `Java 8+ recommended`
+- Java Version: `Java 17+ recommended`
 
 ### Phase Completion Checklist
-- [ ] Planning: 需求已分析，cycles 已規劃
-- [ ] Red: 測試寫完且失敗 (當前 cycle)
-- [ ] Green: 測試通過，功能實作 (當前 cycle)
-- [ ] Refactor: 程式碼改善，測試仍通過 (當前 cycle)
-- [ ] Cycle Complete: 當前 cycle 完成，檢查是否有下一個
-- [ ] Session: 所有 cycles 完成，準備接受新的 business rule
+- [ ] Planning: Requirements analyzed, cycles planned
+- [ ] Red: Test written and failing (current cycle)
+- [ ] Green: Test passing, functionality implemented (current cycle)
+- [ ] Refactor: Code improved, tests still passing (current cycle)
+- [ ] Cycle Complete: Current cycle finished, check for next one
+- [ ] Session: All cycles completed, ready for new business rules
 
 ## State Transition Rules
 
-1. **需求分析優先**: 收到需求 → 先分析拆解 → 再進入 TDD
-2. **嚴格順序**: Red → Green → Refactor (for each cycle)
-3. **不可跳過**: 每個階段都必須完成
-4. **單一職責**: 每個階段只做該階段的事  
-5. **文件約束**: 嚴格遵守檔案修改限制
-6. **完成確認**: 每個階段結束前確認目標達成
-7. **循環管理**: 完成一輪後，檢查是否有下一個案例要處理
+1. **Requirements Analysis First**: Receive requirements → Analyze & decompose → Enter TDD
+2. **Strict Sequence**: Red → Green → Refactor (for each cycle)
+3. **Cannot Skip**: Every phase must be completed
+4. **Single Responsibility**: Each phase only does its designated work  
+5. **File Constraints**: Strictly follow file modification restrictions
+6. **Completion Confirmation**: Confirm goals achieved before phase ends
+7. **Cycle Management**: After completing one round, check for next case to handle
 
 ## ☕ Java SE Specific Guidelines
 
-### 專案結構 (Maven Standard)
+### Project Structure (Maven Standard)
 ```
 project-root/
 ├── src/
@@ -148,16 +236,16 @@ project-root/
 │   └── test/java/
 │       └── com/example/
 │           └── YourClassTest.java
-├── pom.xml (Maven) 或 build.gradle (Gradle)
+├── pom.xml (Maven) or build.gradle (Gradle)
 └── README.md
 ```
 
-### 測試框架選擇
-- **JUnit 5** (推薦): `@Test`, `assertEquals()`, `assertThrows()`
-- **JUnit 4** (兼容): `@Test`, `Assert.assertEquals()`
-- **TestNG** (替代): `@Test`, `Assert.assertEquals()`
+### Test Framework Choice
+- **JUnit 5** (recommended): `@Test`, `assertEquals()`, `assertThrows()`
+- **JUnit 4** (compatible): `@Test`, `Assert.assertEquals()`
+- **TestNG** (alternative): `@Test`, `Assert.assertEquals()`
 
-### 建議依賴設定 (Maven pom.xml)
+### Recommended Dependency Configuration (Maven pom.xml)
 ```xml
 <dependencies>
     <dependency>
@@ -169,41 +257,41 @@ project-root/
 </dependencies>
 ```
 
-### 常用測試命令（優先使用 wrapper）
+### Common Test Commands (Prefer Wrapper)
 ```bash
-# Maven - 優先使用 wrapper
-./mvnw test                    # 執行所有測試（如果有 mvnw）
-./mvnw test -Dtest=ClassName   # 執行特定測試類
-./mvnw compile                 # 編譯主程式碼
-./mvnw clean compile          # 清理後重新編譯
+# Maven - prefer wrapper
+./mvnw test                    # Run all tests (if mvnw exists)
+./mvnw test -Dtest=ClassName   # Run specific test class
+./mvnw compile                 # Compile main code
+./mvnw clean compile          # Clean then recompile
 
-# 如果沒有 wrapper，fallback 到：
+# If no wrapper, fallback to:
 mvn test
 mvn test -Dtest=ClassName
 mvn compile
 mvn clean compile
 
-# Gradle - 優先使用 wrapper
-./gradlew test                 # 執行所有測試（如果有 gradlew）
-./gradlew test --tests ClassName  # 執行特定測試類
-./gradlew compileJava         # 編譯主程式碼
-./gradlew clean build         # 清理後重新構建
+# Gradle - prefer wrapper
+./gradlew test                 # Run all tests (if gradlew exists)
+./gradlew test --tests ClassName  # Run specific test class
+./gradlew compileJava         # Compile main code
+./gradlew clean build         # Clean then rebuild
 
-# 如果沒有 wrapper，fallback 到：
+# If no wrapper, fallback to:
 gradle test
 gradle test --tests ClassName
 gradle compileJava
 gradle clean build
 ```
 
-### Java TDD 最佳實踐
-1. **測試方法命名**: `should_ReturnExpected_When_GivenInput()`
-2. **測試類命名**: `ClassNameTest` 或 `ClassNameTests`
-3. **一個測試一個斷言**: 保持測試簡潔明確
-4. **使用 AAA 模式**: Arrange → Act → Assert
-5. **適當使用 @BeforeEach** 和 **@AfterEach** 進行setup/cleanup
+### Java TDD Best Practices
+1. **Test Method Naming**: `should_ReturnExpected_When_GivenInput()`
+2. **Test Class Naming**: `ClassNameTest` or `ClassNameTests`
+3. **One Test One Assertion**: Keep tests concise and clear
+4. **Use AAA Pattern**: Arrange → Act → Assert
+5. **Appropriate use of @BeforeEach** and **@AfterEach** for setup/cleanup
 
-### 範例測試模板 (JUnit 5)
+### Example Test Template (JUnit 5)
 ```java
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
