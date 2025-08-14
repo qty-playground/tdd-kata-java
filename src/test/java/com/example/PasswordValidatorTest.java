@@ -1,6 +1,7 @@
 package com.example;
 
 import org.junit.jupiter.api.Test;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PasswordValidatorTest {
@@ -77,5 +78,26 @@ class PasswordValidatorTest {
         // Assert
         assertTrue(result.isValid());
         assertTrue(result.getErrors().isEmpty());
+    }
+
+    @Test
+    void should_ReturnMultipleErrorMessages_When_PasswordViolatesMultipleRules() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String password = "somepassword";
+        List<String> expectedErrors = List.of(
+                "Password must be at least 8 characters",
+                "The password must contain at least 2 numbers",
+                "password must contain at least one capital letter",
+                "password must contain at least one special character"
+        );
+
+        // Act
+        PasswordValidationResult result = validator.validate(password);
+
+        // Assert
+        assertFalse(result.isValid());
+        assertEquals(expectedErrors.size(), result.getErrors().size());
+        assertTrue(result.getErrors().containsAll(expectedErrors));
     }
 }
