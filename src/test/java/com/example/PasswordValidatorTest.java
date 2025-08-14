@@ -19,4 +19,19 @@ class PasswordValidatorTest {
         assertFalse(result.isValid());
         assertTrue(result.getErrors().contains(expectedErrorMessage));
     }
+
+    @Test
+    void should_ReturnInvalidAndErrorMessage_When_PasswordContainsLessThan2Numbers() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String password = "passwordA1";
+        String expectedErrorMessage = "The password must contain at least 2 numbers";
+
+        // Act
+        PasswordValidationResult result = validator.validate(password);
+
+        // Assert
+        assertFalse(result.isValid());
+        assertTrue(result.getErrors().contains(expectedErrorMessage));
+    }
 }
