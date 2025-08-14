@@ -1,0 +1,174 @@
+# GREEN PHASE - Minimal Java Implementation
+
+## 🟢 GREEN PHASE ACTIVE (Java SE + Maven)
+
+**目標：用最極簡的 Java 實作讓失敗的 JUnit 測試通過**
+
+## Strict File Modification Rules
+
+### ✅ ALLOWED - 只能修改這些檔案：
+- `src/main/java/` 目錄下的實作檔案
+- `*.java` 實作檔案 (非 Test 檔案)
+- 新增必要的實作 classes 和 packages
+- 必要時新增 pom.xml dependencies （僅限production dependencies）
+
+### ❌ FORBIDDEN - 絕對不可修改：
+- `src/test/java/` 目錄下的任何檔案
+- 任何 `*Test.java` 檔案
+- 測試相關的 test utilities 或 fixtures
+- 修改任何已存在的 public method signatures
+
+## Green Phase Objectives
+
+### 1. Make Test Pass with Minimal Java Code
+```java
+// 最極簡實作 - hardcode 完全 OK
+public class UserService {
+    public User authenticateUser(String email, String password) {
+        // 直接 hardcode，先讓測試通過
+        return new User("hardcoded@example.com");
+    }
+        
+    public boolean validateEmail(String email) {
+        // 最簡實作
+        return true;
+    }
+        
+    public int calculateScore(Map<String, Object> data) {
+        // 固定返回值也沒問題
+        return 42;
+    }
+}
+```
+
+### 2. Implementation Priorities
+1. **語法正確** > 邏輯正確
+2. **測試通過** > 程式碼優雅  
+3. **快速實作** > 完美設計
+4. **Hardcode** > 複雜邏輯
+
+### 3. Acceptable Green Phase Patterns (Java)
+```java
+// Pattern 1: 直接返回預期值
+public String getUserName() {
+    return "John Doe";
+}
+
+// Pattern 2: 簡單條件判斷
+public boolean isValid(String value) {
+    if ("expected_value".equals(value)) {
+        return true;
+    }
+    return false;
+}
+
+// Pattern 3: 拋出預期的例外
+public void validateInput(String data) {
+    if ("invalid".equals(data)) {
+        throw new ValidationException("Invalid input");
+    }
+}
+
+// Pattern 4: 創建假物件
+public User findUser(String userId) {
+    return new User(userId, "fake_email@test.com", "fake_name");
+}
+
+// Pattern 5: Throw UnsupportedOperationException
+public String complexMethod() {
+    throw new UnsupportedOperationException("Not implemented yet");
+}
+```
+
+## Green Phase Completion Criteria
+
+### ✅ Phase Complete When:
+1. **All tests pass** - 所有測試都是綠色
+2. **Minimal implementation** - 用最簡實作達成
+3. **No test modification** - 沒有修改任何測試
+4. **Syntactically correct** - 程式碼語法正確
+
+### 📋 Green Phase Checklist:
+- [ ] 執行測試指令確認測試狀態
+- [ ] 失敗的 JUnit 測試現在通過了
+- [ ] 沒有修改任何 `src/test/java/` 目錄的檔案
+- [ ] Java 實作是最簡可能的版本
+- [ ] 所有現有測試依然通過 (再次執行測試)
+- [ ] 準備好進入 Refactor Phase
+
+### 🔧 建議測試執行指令（優先使用 wrapper）:
+```bash
+# Maven - 優先使用 wrapper
+./mvnw test              # 如果有 mvnw
+mvn test                 # fallback
+
+# Gradle - 優先使用 wrapper  
+./gradlew test           # 如果有 gradlew
+gradle test              # fallback
+```
+
+## Implementation Strategies
+
+### Strategy 1: Direct Return (Java)
+```java
+public String methodName() {
+    return "expected_result";
+}
+```
+
+### Strategy 2: Simple Conditional (Java)
+```java  
+public String methodName(String inputValue) {
+    if ("specific_case".equals(inputValue)) {
+        return "expected_result";
+    }
+    return "default_result";
+}
+```
+
+### Strategy 3: Exception Throwing (Java)
+```java
+public String methodName(String inputValue) {
+    if ("invalid".equals(inputValue)) {
+        throw new CustomException("Expected error");
+    }
+    return "success";
+}
+```
+
+### Strategy 4: Create Stub Classes (Java)
+```java
+// Create minimal class to satisfy compilation
+public class ServiceStub {
+    public String process(String input) {
+        return "stub_result";  // Hardcoded response
+    }
+}
+```
+
+## Transition to Refactor Phase
+
+Green Phase 完成後，輸出：
+```
+🟢 → 🔧 GREEN PHASE COMPLETE  
+All tests passing: ✅
+Implementation added: [method/class names]
+Ready for REFACTOR PHASE
+```
+
+## Common Green Phase Mistakes to Avoid
+
+❌ **Don't**:
+- 修改 src/test/java/ 下的測試檔案
+- 過度設計或優化 (over-engineering)
+- 實作不必要的功能
+- 考慮未來需求
+- 添加複雜的 business logic
+
+✅ **Do**:  
+- 用最簡的 Java 實作讓 JUnit 測試通過
+- Hardcode 值完全可以接受
+- 專注於當前失敗的測試
+- 快速且直接的解決方案
+- 創建必要的 classes 和 packages
+- 使用 public method signatures 符合測試期望

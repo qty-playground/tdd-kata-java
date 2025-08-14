@@ -1,0 +1,180 @@
+# Java SE Coding Style 指南
+
+## 核心原則
+
+Code should be self-documenting through excellent naming and clear structure. 好的命名不需要註解
+
+## 關鍵規則
+
+### Package Structure & Imports
+使用清楚的 package 結構，表達模組層次和業務意圖
+
+```java
+// ✅ Good - Clear package structure
+package com.example.services;
+import com.example.models.User;
+import com.example.repositories.UserRepository;
+import com.example.validators.EmailValidator;
+
+// ✅ Good - Business-focused package naming
+package com.example.authentication;
+package com.example.userregistration;  
+package com.example.emailvalidation;
+package com.example.paymentprocessing;
+
+// ❌ Bad - Technical-only naming
+package com.example.utils;
+package com.example.helpers;
+package com.example.managers;
+```
+
+### Screaming Architecture Names
+類別、方法和變數命名要明確表達業務意圖和目的
+
+```java
+// ✅ Classes scream their purpose
+public class AuthenticationService { }
+public class UserRegistrationService { }  
+public class EmailValidationService { }
+public class PaymentProcessingService { }
+
+// ✅ Variables and methods scream their purpose
+public RegisteredUser registerNewUser(String email, String password) {
+    EmailValidator userEmailValidator = new EmailValidator();
+    PasswordHasher passwordHasher = new PasswordHasher();
+    UserRepository userRepository = new UserRepository();
+    
+    ValidatedEmail validatedEmail = userEmailValidator.validate(email);
+    HashedPassword hashedPassword = passwordHasher.hash(password);
+    
+    return userRepository.saveNewUser(validatedEmail, hashedPassword);
+}
+
+// ❌ Poor - purpose unclear
+public User process(String data, String key) {
+    Validator v = new Validator();
+    Hasher h = new Hasher();
+    Repository r = new Repository();
+    // ...
+}
+```
+
+### Strong Typing & Domain Objects
+使用明確的型別宣告，建立領域物件，避免 primitive obsession
+
+```java
+// ✅ Good - Strong typing with domain objects
+public class UserRegistrationRequest {
+    private final String emailAddress;
+    private final String rawPassword;
+    private final String fullName;
+    private final String preferredLanguage;
+    
+    public UserRegistrationRequest(String emailAddress, String rawPassword, 
+                                 String fullName, String preferredLanguage) {
+        this.emailAddress = emailAddress;
+        this.rawPassword = rawPassword;
+        this.fullName = fullName;
+        this.preferredLanguage = preferredLanguage;
+    }
+    
+    // getters...
+}
+
+public class EmailValidationResult {
+    private final boolean isValid;
+    private final String errorMessage;
+    
+    public EmailValidationResult(boolean isValid, String errorMessage) {
+        this.isValid = isValid;
+        this.errorMessage = errorMessage != null ? errorMessage : "";
+    }
+    
+    public boolean isValid() { return isValid; }
+    public String getErrorMessage() { return errorMessage; }
+}
+
+// ❌ Bad - Primitive obsession
+public Map<String, Object> registerUser(Map<String, String> userData) {
+    // What's in these maps? Unclear contract
+    return new HashMap<>();
+}
+```
+
+### Method Signatures & Return Types
+方法簽名要清楚表達輸入和輸出的契約
+
+```java
+// ✅ Good - Clear contracts
+public UserAccount createUserAccount(String email, String password) {
+    String userId = generateUserId();
+    LocalDateTime createdAt = LocalDateTime.now();
+    return new UserAccount(userId, email, password, createdAt);
+}
+
+public Optional<AuthenticatedUser> authenticateUser(LoginCredentials credentials) {
+    // Returns Optional to clearly indicate possible failure
+}
+
+public ValidationResult validateEmailFormat(String emailAddress) {
+    // Returns domain object instead of boolean
+}
+
+// ❌ Bad - Unclear contracts
+public Object doSomething(Object input) {
+    // What goes in? What comes out?
+}
+```
+
+### Java-specific Best Practices
+
+#### Constructor & Builder Pattern
+```java
+// ✅ Good - Clear constructor with validation
+public class User {
+    private final String userId;
+    private final String email;
+    private final LocalDateTime createdAt;
+    
+    public User(String userId, String email, LocalDateTime createdAt) {
+        this.userId = Objects.requireNonNull(userId, "User ID cannot be null");
+        this.email = Objects.requireNonNull(email, "Email cannot be null");  
+        this.createdAt = Objects.requireNonNull(createdAt, "Created date cannot be null");
+    }
+}
+
+// For complex objects, use Builder pattern
+public class UserBuilder {
+    public static UserBuilder newUser() {
+        return new UserBuilder();
+    }
+    
+    public UserBuilder withEmail(String email) { /* ... */ }
+    public UserBuilder withPassword(String password) { /* ... */ }
+    public User build() { /* ... */ }
+}
+```
+
+#### Exception Handling
+```java
+// ✅ Good - Domain-specific exceptions
+public class UserRegistrationException extends Exception {
+    public UserRegistrationException(String message) {
+        super(message);
+    }
+}
+
+public class InvalidEmailFormatException extends UserRegistrationException {
+    public InvalidEmailFormatException(String email) {
+        super("Invalid email format: " + email);
+    }
+}
+```
+
+## Key Principles
+
+1. **Clear package structure** - Business-focused package naming
+2. **Screaming architecture** - Names reveal intent and purpose  
+3. **Strong typing** - Use domain objects, avoid primitive obsession
+4. **Clear contracts** - Method signatures express input/output clearly
+5. **Immutable objects** - Prefer final fields and immutable data structures

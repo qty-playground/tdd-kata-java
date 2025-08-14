@@ -1,0 +1,230 @@
+# TDD Labs - Development Prompts Overview (Java SE)
+
+## ☕ Java SE 專案開發流程指南
+
+這個專案使用一系列專門的 prompts 來指導 Java SE 開發的不同階段和任務。每個 prompt 都有特定的用途和使用時機。
+
+## Prompts 架構
+
+```
+prompts/
+├── overview.prompt         # 📋 本檔案 - 整體使用指南
+├── coding-style.prompt     # 🎨 Java SE 編碼風格規範
+└── tdd/                   # 🔄 TDD 開發流程
+    ├── tdd-session.prompt # 🎯 TDD 主控制器 (Java SE)
+    ├── red-phase.prompt   # 🔴 Red Phase 專用 (JUnit 5)
+    ├── green-phase.prompt # 🟢 Green Phase 專用 (Java)
+    └── refactor-phase.prompt # 🔧 Refactor Phase 專用 (Java)
+```
+
+## 使用流程
+
+### 1. Java 專案設置
+```bash
+# Maven 專案初始化
+mvn archetype:generate -DgroupId=com.example \
+  -DartifactId=tdd-practice -DarchetypeArtifactId=maven-archetype-quickstart
+
+# 或 Gradle 專案初始化  
+gradle init --type java-application
+
+# 確認測試環境正常（優先使用 wrapper）
+./mvnw test        # 如果有 mvnw
+./gradlew test     # 如果有 gradlew
+# 或 fallback 到：
+mvn test
+gradle test
+```
+
+### 2. 開發前準備
+閱讀核心指南：
+- `@prompts/coding-style.prompt` - 了解 Java SE 編碼風格要求
+- 確認專案使用 JUnit 5 + Maven/Gradle
+
+### 3. TDD 開發流程
+
+#### 3.1 開始新的 TDD Session
+```
+使用: @prompts/tdd/tdd-session.prompt
+目的: 確定目標類別、測試檔案，判斷當前應該在哪個階段
+```
+
+#### 3.2 Red Phase - 寫失敗 JUnit 測試
+```
+使用: @prompts/tdd/red-phase.prompt
+限制: 只能修改 src/test/java/ 目錄下的檔案
+目標: 為新的 business rule 寫失敗的 JUnit 測試
+```
+
+#### 3.3 Green Phase - 最簡 Java 實作
+```
+使用: @prompts/tdd/green-phase.prompt  
+限制: 只能修改 src/main/java/ 實作檔案
+目標: 用最極簡方式讓 JUnit 測試通過 (hardcode OK)
+```
+
+#### 3.4 Refactor Phase - 改善 Java 程式碼品質
+```
+使用: @prompts/tdd/refactor-phase.prompt
+限制: 保持 public method signatures 不變
+目標: 在 JUnit 測試保護下改善程式碼品質
+```
+
+#### 3.5 循環或結束
+回到 `tdd-session.prompt` 判斷：
+- 有新 rule → 進入下一個 Red Phase
+- 沒有新 rule → 等待新需求
+
+## 使用範例
+
+### 場景 1: Java SE 新功能開發
+```markdown
+1. @prompts/tdd/tdd-session.prompt
+   - 確定目標: user authentication feature
+   - 檔案: src/main/java/com/example/AuthService.java + src/test/java/
+
+2. @prompts/tdd/red-phase.prompt
+   - 寫測試: should_authenticate_valid_user()
+   - 結果: ClassNotFoundException (類別不存在)
+
+3. @prompts/tdd/green-phase.prompt  
+   - 建立 AuthService 類別
+   - hardcode return new User("fake@test.com")
+
+4. @prompts/tdd/refactor-phase.prompt
+   - 改善命名、提取 private 方法
+   - 保持 public interface 不變，測試持續通過
+```
+
+### 場景 2: Maven/Gradle 專案開發
+```markdown
+1. 建立 Java 專案結構
+   - src/main/java/com/example/
+   - src/test/java/com/example/
+   - pom.xml (Maven) 或 build.gradle (Gradle)
+
+2. 配合 TDD 流程開發業務邏輯
+   - 先寫 JUnit 測試 (Red)
+   - 實作 Java classes + methods (Green)  
+   - 重構改善 (Refactor)
+```
+
+## Prompt 選擇指南
+
+### 何時使用哪個 Prompt？
+
+| 情況 | 使用 Prompt | 目的 |
+|------|-------------|------|
+| 不確定現在該做什麼 | `tdd-session.prompt` | 狀態判斷和流程控制 |
+| 需要寫 JUnit 測試 | `red-phase.prompt` | 專注 JUnit 測試撰寫 |
+| 需要實作 Java 功能 | `green-phase.prompt` | 專注最簡 Java 實作 |
+| Java 程式碼需要改善 | `refactor-phase.prompt` | 專注程式碼品質改善 |
+| Java 程式碼風格問題 | `coding-style.prompt` | Java 命名和結構規範 |
+
+## 重要原則
+
+### 1. 階段純粹性
+- 每個 TDD 階段都有明確的檔案修改限制
+- Red Phase: 只修改 `src/test/java/`
+- Green Phase: 只修改 `src/main/java/`  
+- Refactor Phase: 不修改 public method signatures
+- 專注於當前階段的唯一目標
+
+### 2. Prompt 協作
+- `coding-style.prompt` 的 Java 原則貫穿所有階段
+- TDD prompts 控制 Java 開發節奏和品質
+- JUnit 5 測試框架標準化
+
+### 3. Java 開發紀律
+- 遵循 Red → Green → Refactor 順序
+- 每個階段完成後執行測試指令確認（優先使用 `./mvnw test` 或 `./gradlew test`）
+- 在 JUnit 測試保護下放心重構 Java 程式碼
+
+## 故障排除
+
+### 常見問題
+1. **不知道在哪個階段**: 使用 `tdd-session.prompt` 重新確認
+2. **JUnit 測試一直不通過**: 確認是否在正確的 phase 做正確的事
+3. **Java 程式碼太複雜**: 可能在 Green Phase 過度設計了
+4. **重構後 JUnit 測試失敗**: 違反了 public interface 保持不變的原則
+5. **Maven/Gradle 編譯錯誤**: 檢查 import 語句和 package 宣告
+
+### Java SE 最佳實踐
+- 頻繁執行測試指令（優先使用 `./mvnw test` 或 `./gradlew test`）
+- 小步驟進行，頻繁確認編譯和測試狀態
+- 遵守 prompt 中的檔案修改限制
+- 保持各階段目標的純粹性
+- 使用 IDE 自動 import 和重構功能
+
+## 常用 Java 測試命令
+
+### Maven 命令（優先使用 wrapper）
+```bash
+# 執行所有測試（優先使用 wrapper）
+./mvnw test                    # 如果有 mvnw
+mvn test                       # fallback
+
+# 執行特定測試類別
+./mvnw test -Dtest=UserServiceTest
+mvn test -Dtest=UserServiceTest
+
+# 執行特定測試方法
+./mvnw test -Dtest=UserServiceTest#shouldAuthenticateUser
+mvn test -Dtest=UserServiceTest#shouldAuthenticateUser
+
+# 顯示詳細輸出
+./mvnw test -X
+mvn test -X
+
+# 編譯但不執行測試
+./mvnw compile
+mvn compile
+
+# 清理並重新編譯
+./mvnw clean compile
+mvn clean compile
+
+# 檢查依賴
+./mvnw dependency:tree
+mvn dependency:tree
+```
+
+### Gradle 命令（優先使用 wrapper）
+```bash
+# 執行所有測試（優先使用 wrapper）
+./gradlew test                 # 如果有 gradlew
+gradle test                    # fallback
+
+# 執行特定測試類別
+./gradlew test --tests UserServiceTest
+gradle test --tests UserServiceTest
+
+# 執行特定測試方法
+./gradlew test --tests UserServiceTest.shouldAuthenticateUser
+gradle test --tests UserServiceTest.shouldAuthenticateUser
+
+# 顯示詳細輸出
+./gradlew test --info
+gradle test --info
+
+# 編譯但不執行測試
+./gradlew compileJava
+gradle compileJava
+
+# 清理並重新構建
+./gradlew clean build
+gradle clean build
+
+# 檢查依賴
+./gradlew dependencies
+gradle dependencies
+```
+
+### IDE 整合
+- **IntelliJ IDEA**: 右鍵點選測試類別或方法執行
+- **Eclipse**: 使用 JUnit run configuration
+- **VS Code**: 使用 Java Test Runner extension
+
+---
+
+**記住**: 這些 prompts 是為了讓 Java SE 開發過程更有紀律和效率。當有疑問時，回到對應的 prompt 尋找具體指導。遵循 Maven/Gradle 標準專案結構和 JUnit 5 測試慣例。

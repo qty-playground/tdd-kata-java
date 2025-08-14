@@ -1,0 +1,268 @@
+# REFACTOR PHASE - Improve Java Code Quality
+
+## 🔧 REFACTOR PHASE ACTIVE (Java SE + Maven)
+
+**目標：在 JUnit 測試保護下改善 Java 程式碼品質，保持 public interface 不變**
+
+## Strict File Modification Rules
+
+### ✅ ALLOWED - 只能修改這些檔案：
+- `src/main/java/` 目錄下的實作檔案
+- 改善內部實作程式碼
+- 重新組織 class 結構和 packages
+- 改善變數和 private/protected method 命名
+
+### ❌ FORBIDDEN - 絕對不可修改：
+- `src/test/java/` 目錄下的任何檔案
+- 任何 `*Test.java` 檔案
+- **Public method signatures** (method 名稱、參數、返回類型)
+- **Public class names** (類別名稱)
+- 任何會影響 JUnit 測試的外部行為
+
+## Refactor Objectives
+
+### 1. Code Quality Improvements
+
+#### 消除重複 (DRY)
+```java
+// Before: 重複的驗證邏輯
+public boolean validateEmail(String email) {
+    if (!email.contains("@")) {
+        return false;
+    }
+    if (email.length() < 5) {
+        return false;
+    }
+    return true;
+}
+
+public boolean validateUserEmail(User user) {
+    if (!user.getEmail().contains("@")) {
+        return false;
+    }
+    if (user.getEmail().length() < 5) {
+        return false;
+    }
+    return true;
+}
+
+// After: 提取共通方法
+private boolean isValidEmailFormat(String email) {
+    return email.contains("@") && email.length() >= 5;
+}
+
+public boolean validateEmail(String email) {
+    return isValidEmailFormat(email);
+}
+
+public boolean validateUserEmail(User user) {
+    return isValidEmailFormat(user.getEmail());
+}
+```
+
+#### 改善命名 (Screaming Architecture)
+```java
+// Before: 不清楚的命名
+public String process(String data) {
+    boolean result = check(data);
+    return convert(result);
+}
+
+// After: 自我說明的命名  
+public String authenticateUserCredentials(String credentials) {
+    boolean validationResult = validateCredentialsFormat(credentials);
+    return generateAuthenticationToken(validationResult);
+}
+```
+
+#### 提取複雜邏輯
+```java
+// Before: 複雜的內聯邏輯
+public User registerUser(String email, String password) throws ValidationException {
+    if (!email.contains("@") || email.length() < 5) {
+        throw new ValidationException("Invalid email");
+    }
+    if (password.length() < 8 || !password.chars().anyMatch(Character::isDigit)) {
+        throw new ValidationException("Invalid password");
+    }
+    return new User(email, password);
+}
+
+// After: 提取驗證邏輯
+public User registerUser(String email, String password) throws ValidationException {
+    validateEmailFormat(email);
+    validatePasswordStrength(password);
+    return new User(email, password);
+}
+
+private void validateEmailFormat(String email) throws ValidationException {
+    if (!email.contains("@") || email.length() < 5) {
+        throw new ValidationException("Invalid email");
+    }
+}
+
+private void validatePasswordStrength(String password) throws ValidationException {
+    if (password.length() < 8 || !password.chars().anyMatch(Character::isDigit)) {
+        throw new ValidationException("Invalid password");
+    }
+}
+```
+
+### 2. Interface Preservation Rules
+
+#### ✅ Safe Refactoring (Internal Changes)
+- 重新命名 private 方法 (`private methodName()`)
+- 提取 private 方法
+- 改善內部資料結構
+- 重新組織程式碼流程
+- 優化演算法實作
+- 改善 private field 命名
+
+#### ❌ Dangerous Changes (Will Break Tests)
+- 改變 public 方法名稱
+- 修改方法參數或返回型別  
+- 改變例外型別
+- 修改類別名稱
+- 改變 public field 或 getter/setter signatures
+
+### 3. Refactoring Patterns
+
+#### Pattern 1: Extract Method
+```java
+// Before
+public int complexCalculation(int a, int b) {
+    // 複雜邏輯直接寫在一起
+    int temp1 = a * 2 + b;
+    int temp2 = temp1 * temp1;
+    int result = temp2 % 100;
+    return result;
+}
+
+// After  
+public int complexCalculation(int a, int b) {
+    int intermediateValue = calculateWeightedSum(a, b);
+    int squaredValue = applyPowerTransform(intermediateValue);
+    return applyModuloConstraint(squaredValue);
+}
+
+private int calculateWeightedSum(int a, int b) {
+    return a * 2 + b;
+}
+
+private int applyPowerTransform(int value) {
+    return value * value;
+}
+
+private int applyModuloConstraint(int value) {
+    return value % 100;
+}
+```
+
+#### Pattern 2: Replace Hardcode with Constants
+```java
+// Before
+public boolean validatePassword(String password) {
+    return password.length() >= 8;
+}
+
+// After
+private static final int MINIMUM_PASSWORD_LENGTH = 8;
+
+public boolean validatePassword(String password) {
+    return password.length() >= MINIMUM_PASSWORD_LENGTH;
+}
+```
+
+## Refactor Phase Completion Criteria - MANDATORY Code Review
+
+### 🔍 ALWAYS Required: Code Review Session
+**不管是否有實際重構，都必須進行 code review 並留下思考紀錄**
+
+#### 🎯 Code Review Process:
+1. **品質檢查** - 即使沒重構，也要檢視程式碼品質
+2. **改善機會評估** - 記錄可能的改善點
+3. **決策記錄** - 說明為什麼選擇重構或不重構
+
+#### 📝 Required Code Review Report:
+```
+🔍 Code Review Report:
+目前程式碼狀態: [描述當前實作的品質]
+發現的改善機會: [列出可能的重構點]
+本次決策: [重構/不重構 + 原因]
+改善成果: [如果重構了，列出具體改善]
+下次重構建議: [未來可以考慮的改善]
+```
+
+### ✅ Phase Complete When:
+1. **Mandatory code review done** - 完成強制性 code review
+2. **All tests still pass** - 所有測試保持綠色  
+3. **Review documented** - Code review 結果已記錄
+4. **Decision justified** - 重構或不重構的決策有合理說明
+
+### 📋 Enhanced Refactor Phase Checklist:
+- [ ] 🔍 **Mandatory**: 完成 code review 檢視
+- [ ] 📝 **Mandatory**: 撰寫 code review report
+- [ ] ⚖️ **Mandatory**: 記錄重構/不重構的決策理由
+- [ ] 所有測試依然通過 (執行測試指令確認)
+- [ ] 如果重構：消除了明顯的程式碼重複
+- [ ] 如果重構：改善了變數和方法命名  
+- [ ] 如果重構：Public method signatures 保持不變
+- [ ] 準備好結束此輪 TDD cycle 或進入下一個 Red Phase
+
+### 🔧 建議測試執行指令（優先使用 wrapper）:
+```bash
+# Maven - 優先使用 wrapper
+./mvnw test              # 如果有 mvnw
+mvn test                 # fallback
+
+# Gradle - 優先使用 wrapper  
+./gradlew test           # 如果有 gradlew
+gradle test              # fallback
+```
+
+## When to Stop Refactoring
+
+### 停止重構的時機：
+1. **沒有明顯的改善空間** - 程式碼已經夠清晰
+2. **測試覆蓋不足** - 需要更多測試保護才能安全重構
+3. **改善幅度很小** - 投入時間不符合改善效果
+4. **準備新功能** - 有新的 business rule 要實作
+
+## Transition to Next Phase
+
+Refactor Phase 完成後，輸出：
+```
+🔧 → ⭐ REFACTOR PHASE COMPLETE
+🔍 Code Review: ✅ [MANDATORY - DONE]
+All tests still passing: ✅  
+Decision: [重構/不重構] - [reason]
+Code improvements made: [list improvements if any]
+Interface preserved: ✅
+Ready for NEXT RED PHASE or WAIT STATE
+```
+
+### 示範 Code Review Report 範例:
+```
+🔍 Code Review Report:
+目前程式碼狀態: 簡單的 if-else 邏輯，功能正確但可讀性尚可
+發現的改善機會: 
+  - 魔術數字 15, 3, 5 可以提取成常數
+  - 條件判斷可以更語意化
+本次決策: 不重構 - 因為程式碼夠簡單且測試覆蓋充足
+改善成果: N/A
+下次重構建議: 當邏輯更複雜時考慮提取常數和方法命名
+```
+
+## Common Refactor Mistakes to Avoid
+
+❌ **Don't**:
+- 修改 public interface
+- 改變測試預期的行為  
+- 修改測試檔案
+- 過度重構 (over-engineering)
+
+✅ **Do**:
+- 頻繁執行測試確認安全
+- 保持小步驟的改善
+- 專注於可讀性和維護性
+- 在測試保護下大膽重構內部實作

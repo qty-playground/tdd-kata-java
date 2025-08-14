@@ -1,0 +1,215 @@
+# RED PHASE - Write Failing JUnit Tests
+
+## 🔴 RED PHASE ACTIVE (Java SE + Maven)
+
+**目標：為新的 business rule 寫一個失敗的 JUnit 測試**
+
+* 如果測試的案例有多個項目時，拆成多個循環一次只進行一個。不用貪心，不用著急。
+
+## Strict File Modification Rules
+
+### ✅ ALLOWED - 只能修改這些檔案：
+- `src/test/java/` 目錄下的任何 `*Test.java` 檔案
+- 新增 test imports 和 test utilities
+- 修改 test fixtures 和 test data
+
+### ❌ FORBIDDEN - 絕對不可修改：
+- `src/main/java/` 目錄下的任何實作檔案
+- 任何實作相關的 `.java` 檔案  
+- 任何非測試的程式碼
+- `pom.xml` 或 build 配置文件（除非明確需要測試依賴）
+
+## Red Phase Objectives - CRITICAL TDD Purity Rules
+
+### 🎯 1. ONE Test, ONE Rule - 絕對原則
+**NEVER write multiple tests in one Red Phase**
+
+❌ **WRONG - Multiple tests:**
+```java
+@Test
+void should_handle_multiples_of_three() {
+    assertEquals("Foo", fooBarBar(3));
+    assertEquals("Foo", fooBarBar(6));  // 這是第二個測試案例！
+    assertEquals("Foo", fooBarBar(9));  // 這是第三個測試案例！
+}
+```
+
+✅ **CORRECT - Single test case:**
+```java  
+@Test
+void should_return_foo_when_input_is_3() {
+    // 只測試 input=3 的情況，不偷看未來需求
+    assertEquals("Foo", fooBarBar(3));
+}
+```
+
+### 🚫 2. NO Future Peeking - 當下思維
+- **只考慮當下這一個具體需求**
+- **不要預測或準備未來的測試案例**
+- **即使需求描述包含複數範例，也只挑一個來測試**
+
+❌ **WRONG - Peeking at future:**
+```java
+// 需求: "數字 3, 6, 9 都應該回傳 Foo"
+@Test
+void test_multiples_of_three() {
+    assertEquals("Foo", fooBarBar(3));
+    assertEquals("Foo", fooBarBar(6));  // 偷看未來！
+    assertEquals("Foo", fooBarBar(9));  // 偷看未來！
+}
+```
+
+✅ **CORRECT - Present focus:**
+```java
+// 需求: "數字 3, 6, 9 都應該回傳 Foo" 
+// 但我只測試第一個例子
+@Test
+void should_return_foo_when_input_is_3() {
+    assertEquals("Foo", fooBarBar(3));
+}
+```
+
+### 📝 3. Minimal Test Structure (JUnit 5)
+```java
+@Test
+void should_[具體行為]_when_[具體條件]() {
+    // 具體描述這一個測試要驗證什麼
+    
+    // Arrange - 準備測試數據
+    TargetClass target = new TargetClass();
+    InputType input = specificInput;
+    ExpectedType expected = expectedOutput;
+    
+    // Act - 執行被測試的方法
+    ActualType actual = target.targetMethod(input);
+    
+    // Assert - 驗證結果
+    assertEquals(expected, actual);
+}
+```
+
+### 4. Expected Failure Types (Java + JUnit 5)
+```java
+// Class doesn't exist yet - 編譯錯誤
+import com.example.services.NewService; // Class not found
+
+// Method not implemented yet
+@Test
+void should_throw_exception_when_method_not_implemented() {
+    TargetService service = new TargetService();
+    assertThrows(UnsupportedOperationException.class, () -> {
+        service.methodName();
+    });
+}
+
+// Validation rule not implemented
+@Test
+void should_throw_validation_error_for_invalid_input() {
+    ValidationService service = new ValidationService();
+    assertThrows(ValidationException.class, () -> {
+        service.validate("invalid_input");
+    });
+}
+
+// Method returns null or wrong value
+@Test
+void should_return_correct_value() {
+    CalculationService service = new CalculationService();
+    // Expected: null or wrong value initially
+    String result = service.process("input");
+    assertEquals("expected_result", result); // Will fail
+}
+
+// Exception type mismatch
+@Test
+void should_handle_edge_case() {
+    EdgeCaseService service = new EdgeCaseService();
+    // Expected: different exception or no exception
+    assertThrows(SpecificException.class, () -> {
+        service.handleEdgeCase("edge_input");
+    });
+}
+```
+
+## Red Phase Completion Criteria
+
+### ✅ Phase Complete When:
+1. **Test is written** - 新的 JUnit 測試已寫完
+2. **Test runs and fails** - 執行測試指令確認測試被發現且失敗
+3. **Test fails correctly** - 測試因為正確的原因失敗（UnsupportedOperationException, ClassNotFoundException, AssertionFailure etc）
+4. **Test is focused** - 只測試一個 business rule
+5. **Imports are minimal** - 只 import 必要的 classes 和 JUnit assertions
+
+### 📋 Red Phase Checklist:
+- [ ] 測試寫在正確的 `src/test/java/` 目錄下
+- [ ] 測試名稱清楚描述 business rule
+- [ ] 執行測試指令確認測試被發現且會失敗（原因正確）
+- [ ] 沒有修改任何 `src/main/java/` 實作程式碼
+- [ ] 準備好進入 Green Phase
+
+### 🔧 建議測試執行指令（優先使用 wrapper）:
+```bash
+# Maven - 優先使用 wrapper
+./mvnw test              # 如果有 mvnw
+mvn test                 # fallback
+
+# Gradle - 優先使用 wrapper  
+./gradlew test           # 如果有 gradlew
+gradle test              # fallback
+```
+
+## Transition to Green Phase
+
+Red Phase 完成後，輸出：
+```
+🔴 → 🟢 RED PHASE COMPLETE
+Failed test created: [test_method_name]
+Reason for failure: [NotImplementedError/ImportError/etc]
+Ready for GREEN PHASE
+```
+
+## Test Discovery Guidelines
+
+### 確保測試被 Maven/Gradle 發現：
+```bash
+# Maven - 檢查測試發現情況（優先使用 wrapper）
+./mvnw test -DdryRun=true   # 如果有 mvnw
+./mvnw test --help          # 查看可用選項
+./mvnw test -Dtest=UserServiceTest  # 執行特定測試類別
+
+# 如果沒有 wrapper，fallback 到：
+mvn test -DdryRun=true
+mvn test -Dtest=UserServiceTest
+
+# Gradle - 檢查測試發現情況（優先使用 wrapper）
+./gradlew test --dry-run    # 如果有 gradlew
+./gradlew test --info       # 顯示詳細資訊
+./gradlew test --tests UserServiceTest  # 執行特定測試類別
+
+# 如果沒有 wrapper，fallback 到：
+gradle test --dry-run
+gradle test --tests UserServiceTest
+
+# 如果測試沒被發現，檢查：
+# 1. 檔案名稱是否符合 *Test.java 或 *Tests.java
+# 2. 類別位於正確的 package 下
+# 3. 檔案路徑是否在 src/test/java/ 目錄下
+# 4. 是否有編譯錯誤阻止執行
+# 5. 測試方法是否有 @Test annotation
+```
+
+## Common Red Phase Mistakes to Avoid
+
+❌ **Don't**:
+- 修改 src/main/java/ 下的實作程式碼
+- 寫多個規則在一個測試裡
+- 讓測試意外通過
+- 過度複雜的測試 setup
+- 忘記確認測試被 Maven/Gradle 發現
+
+✅ **Do**:
+- 專注寫一個失敗的 JUnit 測試
+- 清楚表達 business rule
+- 確認失敗原因正確（compilation error, assertion failure, exception）
+- 保持測試簡單明確
+- 先確認 test discovery 正常（mvn test 或 gradle test）

@@ -1,0 +1,227 @@
+# TDD Session Controller (Java SE)
+
+## ☕ Java SE TDD Workflow
+
+### 🎯 當收到新需求時的反思流程  
+**在進入任何 TDD 階段前，必須先進行需求分析**
+
+#### 必要反思檢查點：
+```
+❓ 反思問題：
+1. 這個需求是否包含多個獨立的測試案例？
+2. 如果是，應該拆解成幾個 TDD cycles？
+3. 每個 cycle 要測試什麼具體的方法簽名和輸入→輸出？
+
+📋 分析輸出格式：
+TDD Cycles Planning:
+Cycle 1: [測試方法描述] - Input: X, Expected: Y
+Cycle 2: [測試方法描述] - Input: X, Expected: Y  
+...
+總計: N 輪 cycles
+當前處理: Cycle 1
+```
+
+#### 🚨 需要拆解的需求識別：
+- **多個具體範例**: "數字 3, 6, 9 都應該回傳 Foo" → 3個 test methods
+- **不同規則組合**: "基本規則 + Foo規則 + 複合規則" → 至少3個 test cycles  
+- **邊界條件列舉**: "正數、負數、零的處理" → 3個 test cases
+
+#### ✅ 單一案例的需求：
+- **一個具體輸入輸出**: "當輸入3時應該回傳Foo" → 1個 test method
+- **單一規則驗證**: "驗證email格式檢查" → 1個 test cycle
+
+## State Machine Control
+
+```
+[Start] → Red → Green → Refactor → Red → ... → [Wait for New Rule]
+```
+
+## Current State Detection
+
+### Determine Current Phase
+檢查當前狀況來決定應該在哪個階段：
+
+1. **進入 Red Phase 的條件：**
+   - 已完成需求分析，明確本輪要測試的案例
+   - 準備開始某一個具體的 TDD cycle
+   - 上一個 refactor 階段完成，進入下一輪 cycle
+   - 有明確的單一測試案例要實作
+
+2. **進入 Green Phase 的條件：**
+   - Red phase 完成（有失敗的測試）
+   - src/test/java/ 目錄下有新的失敗測試
+   - 需要實作程式碼讓測試通過
+
+3. **進入 Refactor Phase 的條件：**
+   - Green phase 完成（測試通過）
+   - 所有測試都是綠色的
+   - 程式碼有改善空間（重複、命名、結構）
+
+4. **進入 Wait State 的條件：**
+   - Refactor phase 完成
+   - 沒有新的 business rule
+   - 沒有明顯的程式碼改善需求
+
+## Phase Transition Commands
+
+### 需求分析和規劃
+```
+🔍 REQUIREMENTS ANALYSIS:
+1. 分析收到的需求是否包含多個測試案例
+2. 拆解成獨立的輸入→輸出案例
+3. 規劃要進行幾輪 TDD cycles
+4. 聚焦到第一個要處理的案例
+輸出：TDD Cycles Planning 清單
+```
+
+### 啟動 Red Phase
+```
+現在進入 RED PHASE - Cycle X
+使用 @prompts/tdd/red-phase.prompt
+目標：為當前 cycle 的案例寫失敗的 JUnit 測試
+當前案例：[具體輸入] → [預期輸出]
+執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）確認測試失敗
+```
+
+### 啟動 Green Phase  
+```
+現在進入 GREEN PHASE
+使用 @prompts/tdd/green-phase.prompt  
+目標：最簡實作讓 JUnit 測試通過
+執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）確認測試通過
+```
+
+### 啟動 Refactor Phase
+```
+現在進入 REFACTOR PHASE
+使用 @prompts/tdd/refactor-phase.prompt
+目標：改善程式碼品質，保持 JUnit 測試通過
+執行：./mvnw test 或 ./gradlew test（優先使用 wrapper）頻繁確認測試仍通過
+```
+
+### 等待新規則
+```
+TDD CYCLE COMPLETE
+等待新的 business rule 或問題探索
+準備進入下一個 Red Phase
+```
+
+## Session Management
+
+### 當前會話狀態
+- Main Class: `src/main/java/com/example/ExampleService.java`
+- Test Class: `src/test/java/com/example/ExampleServiceTest.java`  
+- Current Phase: `[PLANNING|RED|GREEN|REFACTOR|WAITING]`
+- Current Cycle: `Cycle X / Total Y cycles`
+- Current Test Case: `具體的輸入 → 預期輸出`
+- Remaining Cases: `剩餘要處理的案例列表`
+- Build Tool: `[Maven|Gradle]`
+- Java Version: `Java 8+ recommended`
+
+### Phase Completion Checklist
+- [ ] Planning: 需求已分析，cycles 已規劃
+- [ ] Red: 測試寫完且失敗 (當前 cycle)
+- [ ] Green: 測試通過，功能實作 (當前 cycle)
+- [ ] Refactor: 程式碼改善，測試仍通過 (當前 cycle)
+- [ ] Cycle Complete: 當前 cycle 完成，檢查是否有下一個
+- [ ] Session: 所有 cycles 完成，準備接受新的 business rule
+
+## State Transition Rules
+
+1. **需求分析優先**: 收到需求 → 先分析拆解 → 再進入 TDD
+2. **嚴格順序**: Red → Green → Refactor (for each cycle)
+3. **不可跳過**: 每個階段都必須完成
+4. **單一職責**: 每個階段只做該階段的事  
+5. **文件約束**: 嚴格遵守檔案修改限制
+6. **完成確認**: 每個階段結束前確認目標達成
+7. **循環管理**: 完成一輪後，檢查是否有下一個案例要處理
+
+## ☕ Java SE Specific Guidelines
+
+### 專案結構 (Maven Standard)
+```
+project-root/
+├── src/
+│   ├── main/java/
+│   │   └── com/example/
+│   │       └── YourClass.java
+│   └── test/java/
+│       └── com/example/
+│           └── YourClassTest.java
+├── pom.xml (Maven) 或 build.gradle (Gradle)
+└── README.md
+```
+
+### 測試框架選擇
+- **JUnit 5** (推薦): `@Test`, `assertEquals()`, `assertThrows()`
+- **JUnit 4** (兼容): `@Test`, `Assert.assertEquals()`
+- **TestNG** (替代): `@Test`, `Assert.assertEquals()`
+
+### 建議依賴設定 (Maven pom.xml)
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.9.2</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+### 常用測試命令（優先使用 wrapper）
+```bash
+# Maven - 優先使用 wrapper
+./mvnw test                    # 執行所有測試（如果有 mvnw）
+./mvnw test -Dtest=ClassName   # 執行特定測試類
+./mvnw compile                 # 編譯主程式碼
+./mvnw clean compile          # 清理後重新編譯
+
+# 如果沒有 wrapper，fallback 到：
+mvn test
+mvn test -Dtest=ClassName
+mvn compile
+mvn clean compile
+
+# Gradle - 優先使用 wrapper
+./gradlew test                 # 執行所有測試（如果有 gradlew）
+./gradlew test --tests ClassName  # 執行特定測試類
+./gradlew compileJava         # 編譯主程式碼
+./gradlew clean build         # 清理後重新構建
+
+# 如果沒有 wrapper，fallback 到：
+gradle test
+gradle test --tests ClassName
+gradle compileJava
+gradle clean build
+```
+
+### Java TDD 最佳實踐
+1. **測試方法命名**: `should_ReturnExpected_When_GivenInput()`
+2. **測試類命名**: `ClassNameTest` 或 `ClassNameTests`
+3. **一個測試一個斷言**: 保持測試簡潔明確
+4. **使用 AAA 模式**: Arrange → Act → Assert
+5. **適當使用 @BeforeEach** 和 **@AfterEach** 進行setup/cleanup
+
+### 範例測試模板 (JUnit 5)
+```java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ExampleServiceTest {
+    
+    @Test
+    void should_ReturnExpected_When_GivenInput() {
+        // Arrange
+        ExampleService service = new ExampleService();
+        int input = 3;
+        String expected = "Foo";
+        
+        // Act
+        String actual = service.process(input);
+        
+        // Assert
+        assertEquals(expected, actual);
+    }
+}
+```
