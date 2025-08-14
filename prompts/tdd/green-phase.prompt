@@ -75,6 +75,12 @@ public String complexMethod() {
 2. **Minimal implementation** - Simplest possible solution
 3. **Only implementation files modified** - No test changes
 
+### 📝 MANDATORY COMMIT:
+**Must commit with progress report answering:**
+1. Current phase and what was done?
+2. Discoveries and problems encountered?
+3. Next phase and planned actions?
+
 ### 🔧 Execute Tests:
 Run tests to confirm all pass
 

@@ -187,6 +187,12 @@ Next refactoring suggestions: [Future improvement considerations]
 2. **📝 Decision documented** - Refactor or no-refactor with reasons
 3. **All tests still pass** - Green status maintained
 
+### 📝 MANDATORY COMMIT:
+**Must commit (use --allow-empty if no code changes) with progress report answering:**
+1. Current phase and what was done?
+2. Discoveries and problems encountered?
+3. Next phase and planned actions?
+
 ### 🔧 Execute Tests:
 Run tests frequently to ensure safety during refactoring
 

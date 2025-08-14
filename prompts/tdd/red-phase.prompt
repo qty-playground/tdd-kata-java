@@ -127,6 +127,12 @@ void should_handle_edge_case() {
 2. **Test fails correctly** - Right failure reason 
 3. **Only test files modified** - No implementation code touched
 
+### 📝 MANDATORY COMMIT:
+**Must commit with progress report answering:**
+1. Current phase and what was done?
+2. Discoveries and problems encountered?
+3. Next phase and planned actions?
+
 ### 🔧 Execute Tests:
 Use Maven/Gradle wrapper commands (refer to tdd-session.prompt for details)
 
