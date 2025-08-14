@@ -134,7 +134,7 @@ void should_handle_edge_case() {
 3. Next phase and planned actions?
 
 ### 🔧 Execute Tests:
-Use Maven/Gradle wrapper commands (refer to tdd-session.prompt for details)
+`./mvnw test` or `./gradlew test` (prefer wrapper if exists), fallback to `mvn test` or `gradle test`
 
 ## → Next: GREEN PHASE
 Write minimal implementation to make the test pass

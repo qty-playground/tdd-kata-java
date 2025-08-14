@@ -82,7 +82,7 @@ public String complexMethod() {
 3. Next phase and planned actions?
 
 ### 🔧 Execute Tests:
-Run tests to confirm all pass
+`./mvnw test` or `./gradlew test` (prefer wrapper if exists), fallback to `mvn test` or `gradle test`
 
 ## Implementation Strategies
 

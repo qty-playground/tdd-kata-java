@@ -194,7 +194,7 @@ Next refactoring suggestions: [Future improvement considerations]
 3. Next phase and planned actions?
 
 ### 🔧 Execute Tests:
-Run tests frequently to ensure safety during refactoring
+`./mvnw test` or `./gradlew test` (prefer wrapper if exists), fallback to `mvn test` or `gradle test`
 
 ### 📝 Code Review Commit Recommendations:
 Since every Refactor Phase must perform code review, decision recording is needed even if no code changes occur:
