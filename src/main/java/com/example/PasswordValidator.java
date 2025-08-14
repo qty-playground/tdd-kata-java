@@ -33,6 +33,18 @@ public class PasswordValidator {
             errors.add("password must contain at least one capital letter");
         }
 
+        boolean hasSpecialCharacter = false;
+        String specialCharacters = "!@#$%^&*()-+="; // Define common special characters
+        for (char c : password.toCharArray()) {
+            if (specialCharacters.contains(String.valueOf(c))) {
+                hasSpecialCharacter = true;
+                break;
+            }
+        }
+        if (!hasSpecialCharacter) {
+            errors.add("password must contain at least one special character");
+        }
+
         if (!errors.isEmpty()) {
             return new PasswordValidationResult(false, errors);
         } else {
