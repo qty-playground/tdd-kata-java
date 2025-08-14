@@ -4,8 +4,8 @@ A comprehensive collection of **Java SE Test-Driven Development** prompts and pr
 
 ## Prerequisites
 
-- Java 8+ (Java 11+ recommended)
-- Maven 3.6+ or Gradle 6.0+
+- Java 17+ (Java 21 LTS recommended)
+- Maven 3.8+ or Gradle 8.0+
 - Your favorite Java IDE (IntelliJ IDEA, Eclipse, or VS Code)
 
 ## Quick Start
