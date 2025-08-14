@@ -22,6 +22,17 @@ public class PasswordValidator {
             errors.add("The password must contain at least 2 numbers");
         }
 
+        boolean hasCapitalLetter = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasCapitalLetter = true;
+                break;
+            }
+        }
+        if (!hasCapitalLetter) {
+            errors.add("password must contain at least one capital letter");
+        }
+
         if (!errors.isEmpty()) {
             return new PasswordValidationResult(false, errors);
         } else {
