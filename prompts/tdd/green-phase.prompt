@@ -4,19 +4,9 @@
 
 **Goal: Use minimal Java implementation to make failing JUnit tests pass**
 
-## Strict File Modification Rules
-
-### ✅ ALLOWED - Can only modify these files:
-- Implementation files in `src/main/java/` directory
-- `*.java` implementation files (not Test files)
-- Add necessary implementation classes and packages
-- Add pom.xml dependencies when necessary (production dependencies only)
-
-### ❌ FORBIDDEN - Absolutely cannot modify:
-- Any files in `src/test/java/` directory
-- Any `*Test.java` files
-- Test-related test utilities or fixtures
-- Modify any existing public method signatures
+## 🎯 File Rules
+**✅ ONLY modify:** `src/main/java/` implementation files  
+**❌ NEVER touch:** `src/test/java/` test files
 
 ## Green Phase Objectives
 
@@ -80,32 +70,13 @@ public String complexMethod() {
 }
 ```
 
-## Green Phase Completion Criteria
+## ✅ Completion Criteria
+1. **All tests pass** - Green status achieved
+2. **Minimal implementation** - Simplest possible solution
+3. **Only implementation files modified** - No test changes
 
-### ✅ Phase Complete When:
-1. **All tests pass** - All tests are green
-2. **Minimal implementation** - Achieved with simplest implementation
-3. **No test modification** - No tests were modified
-4. **Syntactically correct** - Code syntax is correct
-
-### 📋 Green Phase Checklist:
-- [ ] Execute test command to confirm test status
-- [ ] Failed JUnit test now passes
-- [ ] No modification to any files in `src/test/java/` directory
-- [ ] Java implementation is the simplest possible version
-- [ ] All existing tests still pass (execute tests again)
-- [ ] Ready to enter Refactor Phase
-
-### 🔧 Recommended Test Execution Commands (Prefer Wrapper):
-```bash
-# Maven - prefer wrapper
-./mvnw test              # If mvnw exists
-mvn test                 # fallback
-
-# Gradle - prefer wrapper  
-./gradlew test           # If gradlew exists
-gradle test              # fallback
-```
+### 🔧 Execute Tests:
+Run tests to confirm all pass
 
 ## Implementation Strategies
 
@@ -146,15 +117,8 @@ public class ServiceStub {
 }
 ```
 
-## Transition to Refactor Phase
-
-Green Phase complete output:
-```
-🟢 → 🔧 GREEN PHASE COMPLETE  
-All tests passing: ✅
-Implementation added: [method/class names]
-Ready for REFACTOR PHASE
-```
+## → Next: REFACTOR PHASE
+Mandatory code review + optional improvements
 
 ## Common Green Phase Mistakes to Avoid
 

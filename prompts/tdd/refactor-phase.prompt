@@ -4,20 +4,9 @@
 
 **Goal: Improve Java code quality under JUnit test protection, keep public interface unchanged**
 
-## Strict File Modification Rules
-
-### ✅ ALLOWED - Can only modify these files:
-- Implementation files in `src/main/java/` directory
-- Improve internal implementation code
-- Reorganize class structure and packages
-- Improve variable and private/protected method naming
-
-### ❌ FORBIDDEN - Absolutely cannot modify:
-- Any files in `src/test/java/` directory
-- Any `*Test.java` files
-- **Public method signatures** (method names, parameters, return types)
-- **Public class names** (class names)
-- Any external behavior that affects JUnit tests
+## 🎯 File Rules
+**✅ ONLY modify:** `src/main/java/` implementation files (internal changes only)  
+**❌ NEVER touch:** `src/test/java/` test files or public interfaces
 
 ## Refactor Objectives
 
@@ -194,31 +183,12 @@ Next refactoring suggestions: [Future improvement considerations]
 ```
 
 ### ✅ Phase Complete When:
-1. **Mandatory code review done** - Completed mandatory code review
-2. **All tests still pass** - All tests remain green  
-3. **Review documented** - Code review results are recorded
-4. **Decision justified** - Refactor or no-refactor decision has reasonable explanation
+1. **🔍 Mandatory code review done** - Always required
+2. **📝 Decision documented** - Refactor or no-refactor with reasons
+3. **All tests still pass** - Green status maintained
 
-### 📋 Enhanced Refactor Phase Checklist:
-- [ ] 🔍 **Mandatory**: Complete code review inspection
-- [ ] 📝 **Mandatory**: Write code review report
-- [ ] ⚖️ **Mandatory**: Record refactor/no-refactor decision reasoning
-- [ ] All tests still pass (execute test command to confirm)
-- [ ] If refactored: Eliminated obvious code duplication
-- [ ] If refactored: Improved variable and method naming  
-- [ ] If refactored: Public method signatures remain unchanged
-- [ ] Ready to end this TDD cycle or enter next Red Phase
-
-### 🔧 Recommended Test Execution Commands (Prefer Wrapper):
-```bash
-# Maven - prefer wrapper
-./mvnw test              # If mvnw exists
-mvn test                 # fallback
-
-# Gradle - prefer wrapper  
-./gradlew test           # If gradlew exists
-gradle test              # fallback
-```
+### 🔧 Execute Tests:
+Run tests frequently to ensure safety during refactoring
 
 ### 📝 Code Review Commit Recommendations:
 Since every Refactor Phase must perform code review, decision recording is needed even if no code changes occur:
@@ -251,18 +221,8 @@ Next refactoring suggestions: [Suggestions or N/A]
 3. **Small improvement magnitude** - Time investment doesn't match improvement effect
 4. **Ready for new features** - Have new business rules to implement
 
-## Transition to Next Phase
-
-After Refactor Phase completion, output:
-```
-🔧 → ⭐ REFACTOR PHASE COMPLETE
-🔍 Code Review: ✅ [MANDATORY - DONE]
-All tests still passing: ✅  
-Decision: [Refactor/No refactor] - [reason]
-Code improvements made: [list improvements if any]
-Interface preserved: ✅
-Ready for NEXT RED PHASE or WAIT STATE
-```
+## → Next: RED PHASE or WAIT STATE
+Ready for next test case or new requirements
 
 ### Example Code Review Report:
 ```

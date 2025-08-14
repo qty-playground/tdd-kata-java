@@ -6,18 +6,9 @@
 
 * When test cases have multiple items, break them into multiple cycles and handle one at a time. Don't be greedy, don't rush.
 
-## Strict File Modification Rules
-
-### ✅ ALLOWED - Can only modify these files:
-- Any `*Test.java` files in `src/test/java/` directory
-- Add test imports and test utilities
-- Modify test fixtures and test data
-
-### ❌ FORBIDDEN - Absolutely cannot modify:
-- Any implementation files in `src/main/java/` directory
-- Any implementation-related `.java` files  
-- Any non-test code
-- `pom.xml` or build configuration files (unless explicitly needed for test dependencies)
+## 🎯 File Rules
+**✅ ONLY modify:** `src/test/java/` test files  
+**❌ NEVER touch:** `src/main/java/` implementation files
 
 ## Red Phase Objectives - CRITICAL TDD Purity Rules
 
@@ -131,72 +122,24 @@ void should_handle_edge_case() {
 }
 ```
 
-## Red Phase Completion Criteria
+## ✅ Completion Criteria
+1. **One failing test written** - Tests single business rule
+2. **Test fails correctly** - Right failure reason 
+3. **Only test files modified** - No implementation code touched
 
-### ✅ Phase Complete When:
-1. **Test is written** - New JUnit test is complete
-2. **Test runs and fails** - Execute test command to confirm test is discovered and fails
-3. **Test fails correctly** - Test fails for the right reason (UnsupportedOperationException, ClassNotFoundException, AssertionFailure etc)
-4. **Test is focused** - Only tests one business rule
-5. **Imports are minimal** - Only import necessary classes and JUnit assertions
+### 🔧 Execute Tests:
+Use Maven/Gradle wrapper commands (refer to tdd-session.prompt for details)
 
-### 📋 Red Phase Checklist:
-- [ ] Test written in correct `src/test/java/` directory
-- [ ] Test name clearly describes business rule
-- [ ] Execute test command to confirm test is discovered and fails (with correct reason)
-- [ ] No modification to any `src/main/java/` implementation code
-- [ ] Ready to enter Green Phase
-
-### 🔧 Recommended Test Execution Commands (Prefer Wrapper):
-```bash
-# Maven - prefer wrapper
-./mvnw test              # If mvnw exists
-mvn test                 # fallback
-
-# Gradle - prefer wrapper  
-./gradlew test           # If gradlew exists
-gradle test              # fallback
-```
-
-## Transition to Green Phase
-
-Red Phase complete output:
-```
-🔴 → 🟢 RED PHASE COMPLETE
-Failed test created: [test_method_name]
-Reason for failure: [NotImplementedError/ImportError/etc]
-Ready for GREEN PHASE
-```
+## → Next: GREEN PHASE
+Write minimal implementation to make the test pass
 
 ## Test Discovery Guidelines
 
-### Ensure tests are discovered by Maven/Gradle:
-```bash
-# Maven - Check test discovery (prefer wrapper)
-./mvnw test -DdryRun=true   # If mvnw exists
-./mvnw test --help          # View available options
-./mvnw test -Dtest=UserServiceTest  # Run specific test class
-
-# If no wrapper, fallback to:
-mvn test -DdryRun=true
-mvn test -Dtest=UserServiceTest
-
-# Gradle - Check test discovery (prefer wrapper)
-./gradlew test --dry-run    # If gradlew exists
-./gradlew test --info       # Show detailed information
-./gradlew test --tests UserServiceTest  # Run specific test class
-
-# If no wrapper, fallback to:
-gradle test --dry-run
-gradle test --tests UserServiceTest
-
-# If tests not discovered, check:
-# 1. File name follows *Test.java or *Tests.java pattern
-# 2. Class is in correct package
-# 3. File path is in src/test/java/ directory
-# 4. No compilation errors preventing execution
-# 5. Test methods have @Test annotation
-```
+If tests not discovered, check:
+1. File name follows `*Test.java` pattern
+2. Class in correct package under `src/test/java/`
+3. Methods have `@Test` annotation
+4. No compilation errors
 
 ## Common Red Phase Mistakes to Avoid
 
