@@ -1,13 +1,13 @@
-# Java SE Coding Style 指南
+# Java SE Coding Style Guide
 
-## 核心原則
+## Core Principles
 
-Code should be self-documenting through excellent naming and clear structure. 好的命名不需要註解
+Code should be self-documenting through excellent naming and clear structure. Good naming doesn't need comments.
 
-## 關鍵規則
+## Key Rules
 
 ### Package Structure & Imports
-使用清楚的 package 結構，表達模組層次和業務意圖
+Use clear package structure to express module hierarchy and business intent
 
 ```java
 // ✅ Good - Clear package structure
@@ -29,7 +29,7 @@ package com.example.managers;
 ```
 
 ### Screaming Architecture Names
-類別、方法和變數命名要明確表達業務意圖和目的
+Class, method, and variable names should clearly express business intent and purpose
 
 ```java
 // ✅ Classes scream their purpose
@@ -60,7 +60,7 @@ public User process(String data, String key) {
 ```
 
 ### Strong Typing & Domain Objects
-使用明確的型別宣告，建立領域物件，避免 primitive obsession
+Use explicit type declarations, build domain objects, avoid primitive obsession
 
 ```java
 // ✅ Good - Strong typing with domain objects
@@ -102,7 +102,7 @@ public Map<String, Object> registerUser(Map<String, String> userData) {
 ```
 
 ### Method Signatures & Return Types
-方法簽名要清楚表達輸入和輸出的契約
+Method signatures should clearly express input and output contracts
 
 ```java
 // ✅ Good - Clear contracts

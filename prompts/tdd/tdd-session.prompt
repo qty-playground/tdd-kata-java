@@ -67,6 +67,15 @@ Check current situation to decide which phase to be in:
 ### 🚨 CRITICAL: Every Phase Completion Must Have COMMIT Report
 **All phases must submit commit to record progress status when completed**
 
+### 📚 PROMPT REINFORCEMENT SYSTEM
+**MANDATORY: Before starting each phase, AI must read relevant prompt files to reinforce guidelines**
+
+- **Red Phase**: Read `@prompts/tdd/red-phase.prompt` first
+- **Green Phase**: Read `@prompts/tdd/green-phase.prompt` first  
+- **Refactor Phase**: Read `@prompts/tdd/refactor-phase.prompt` AND `@prompts/coding-style.prompt` first
+
+This ensures consistent behavior and prevents guideline drift during long development sessions.
+
 ### Requirements Analysis and Planning
 ```
 🔍 REQUIREMENTS ANALYSIS:
@@ -90,8 +99,11 @@ Current: Cycle 1 - [Specific case]
 
 ### Start Red Phase
 ```
-Entering RED PHASE - Cycle X
-Use @prompts/tdd/red-phase.prompt
+🔴 ENTERING RED PHASE - Cycle X
+
+🚨 MANDATORY: First read @prompts/tdd/red-phase.prompt to reinforce guidelines
+⚡ CRITICAL: Follow ONE Test, ONE Rule principle - NO future peeking!
+
 Goal: Write failing JUnit test for current cycle case
 Current case: [Specific input] → [Expected output]
 Execute: ./mvnw test or ./gradlew test (prefer wrapper) to confirm test failure
@@ -111,8 +123,11 @@ Failure reason: [Specific failure reason]
 
 ### Start Green Phase  
 ```
-Entering GREEN PHASE
-Use @prompts/tdd/green-phase.prompt  
+🟢 ENTERING GREEN PHASE
+
+🚨 MANDATORY: First read @prompts/tdd/green-phase.prompt to reinforce guidelines
+⚡ CRITICAL: Minimal implementation only - Hardcode is OK!
+
 Goal: Minimal implementation to make JUnit tests pass
 Execute: ./mvnw test or ./gradlew test (prefer wrapper) to confirm tests pass
 
@@ -131,8 +146,11 @@ All tests: ✅ PASSING
 
 ### Start Refactor Phase - 🚨 NEVER SKIP THIS PHASE
 ```
-Entering REFACTOR PHASE - ⚠️ MANDATORY PHASE
-Use @prompts/tdd/refactor-phase.prompt
+🔧 ENTERING REFACTOR PHASE - ⚠️ MANDATORY PHASE
+
+🚨 MANDATORY: First read @prompts/tdd/refactor-phase.prompt AND @prompts/coding-style.prompt
+⚡ CRITICAL: Code review is MANDATORY even if no refactoring is done!
+
 Goal: Mandatory code review + Optional code improvements
 Execute: ./mvnw test or ./gradlew test (prefer wrapper) frequently to confirm tests still pass
 
