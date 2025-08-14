@@ -34,4 +34,19 @@ class PasswordValidatorTest {
         assertFalse(result.isValid());
         assertTrue(result.getErrors().contains(expectedErrorMessage));
     }
+
+    @Test
+    void should_ReturnInvalidAndErrorMessage_When_PasswordContainsNoCapitalLetter() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String password = "password12";
+        String expectedErrorMessage = "password must contain at least one capital letter";
+
+        // Act
+        PasswordValidationResult result = validator.validate(password);
+
+        // Assert
+        assertFalse(result.isValid());
+        assertTrue(result.getErrors().contains(expectedErrorMessage));
+    }
 }
