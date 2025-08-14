@@ -64,4 +64,18 @@ class PasswordValidatorTest {
         assertFalse(result.isValid());
         assertTrue(result.getErrors().contains(expectedErrorMessage));
     }
+
+    @Test
+    void should_ReturnValid_When_PasswordMeetsAllRequirements() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String password = "Password12!";
+
+        // Act
+        PasswordValidationResult result = validator.validate(password);
+
+        // Assert
+        assertTrue(result.isValid());
+        assertTrue(result.getErrors().isEmpty());
+    }
 }
