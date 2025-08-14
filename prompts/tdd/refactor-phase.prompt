@@ -220,6 +220,29 @@ mvn test                 # fallback
 gradle test              # fallback
 ```
 
+### 📝 Code Review Commit 建議：
+由於每次 Refactor Phase 都必須進行 code review，即使沒有程式碼變更也需要記錄決策：
+
+```bash
+# 如果有程式碼變更，正常提交
+git add .
+git commit -m "refactor: improve code quality
+
+🔍 Code Review Report:
+[你的 code review 內容]
+"
+
+# 如果沒有程式碼變更，但完成了 code review
+git commit --allow-empty -m "refactor: code review completed - no changes needed
+
+🔍 Code Review Report:
+目前程式碼狀態: [描述]
+發現的改善機會: [列出或 N/A]
+本次決策: 不重構 - [原因]
+下次重構建議: [建議或 N/A]
+"
+```
+
 ## When to Stop Refactoring
 
 ### 停止重構的時機：
