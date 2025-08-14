@@ -1,44 +1,16 @@
 # Java SE Coding Style Guide
 
-## Core Principles
+## 🎯 Our Distinctive Style Rules
 
-Code should be self-documenting through excellent naming and clear structure. Good naming doesn't need comments.
-
-## Key Rules
-
-### Package Structure & Imports
-Use clear package structure to express module hierarchy and business intent
+### 1. Screaming Architecture Names
+**Names must reveal business intent and purpose - not just technical implementation**
 
 ```java
-// ✅ Good - Clear package structure
-package com.example.services;
-import com.example.models.User;
-import com.example.repositories.UserRepository;
-import com.example.validators.EmailValidator;
-
-// ✅ Good - Business-focused package naming
-package com.example.authentication;
-package com.example.userregistration;  
-package com.example.emailvalidation;
-package com.example.paymentprocessing;
-
-// ❌ Bad - Technical-only naming
-package com.example.utils;
-package com.example.helpers;
-package com.example.managers;
-```
-
-### Screaming Architecture Names
-Class, method, and variable names should clearly express business intent and purpose
-
-```java
-// ✅ Classes scream their purpose
-public class AuthenticationService { }
-public class UserRegistrationService { }  
+// ✅ GOOD - Business intent is clear
+public class UserRegistrationService { }
 public class EmailValidationService { }
 public class PaymentProcessingService { }
 
-// ✅ Variables and methods scream their purpose
 public RegisteredUser registerNewUser(String email, String password) {
     EmailValidator userEmailValidator = new EmailValidator();
     PasswordHasher passwordHasher = new PasswordHasher();
@@ -50,131 +22,59 @@ public RegisteredUser registerNewUser(String email, String password) {
     return userRepository.saveNewUser(validatedEmail, hashedPassword);
 }
 
-// ❌ Poor - purpose unclear
+// ❌ BAD - Technical naming reveals nothing about business purpose
 public User process(String data, String key) {
     Validator v = new Validator();
     Hasher h = new Hasher();
     Repository r = new Repository();
-    // ...
 }
 ```
 
-### Strong Typing & Domain Objects
-Use explicit type declarations, build domain objects, avoid primitive obsession
+### 2. Strong Typing & Domain Objects
+**Avoid primitive obsession - create explicit domain types**
 
 ```java
-// ✅ Good - Strong typing with domain objects
+// ✅ GOOD - Strong typing with domain objects
 public class UserRegistrationRequest {
     private final String emailAddress;
     private final String rawPassword;
     private final String fullName;
-    private final String preferredLanguage;
     
-    public UserRegistrationRequest(String emailAddress, String rawPassword, 
-                                 String fullName, String preferredLanguage) {
-        this.emailAddress = emailAddress;
-        this.rawPassword = rawPassword;
-        this.fullName = fullName;
-        this.preferredLanguage = preferredLanguage;
-    }
-    
-    // getters...
+    // Constructor + getters...
 }
 
 public class EmailValidationResult {
     private final boolean isValid;
     private final String errorMessage;
     
-    public EmailValidationResult(boolean isValid, String errorMessage) {
-        this.isValid = isValid;
-        this.errorMessage = errorMessage != null ? errorMessage : "";
-    }
-    
     public boolean isValid() { return isValid; }
     public String getErrorMessage() { return errorMessage; }
 }
 
-// ❌ Bad - Primitive obsession
+// ❌ BAD - Primitive obsession
 public Map<String, Object> registerUser(Map<String, String> userData) {
     // What's in these maps? Unclear contract
-    return new HashMap<>();
 }
 ```
 
-### Method Signatures & Return Types
-Method signatures should clearly express input and output contracts
+### 3. Business-Focused Package Structure
+**Packages should express business domains, not technical layers**
 
 ```java
-// ✅ Good - Clear contracts
-public UserAccount createUserAccount(String email, String password) {
-    String userId = generateUserId();
-    LocalDateTime createdAt = LocalDateTime.now();
-    return new UserAccount(userId, email, password, createdAt);
-}
+// ✅ GOOD - Business-focused
+package com.example.authentication;
+package com.example.userregistration;  
+package com.example.emailvalidation;
+package com.example.paymentprocessing;
 
-public Optional<AuthenticatedUser> authenticateUser(LoginCredentials credentials) {
-    // Returns Optional to clearly indicate possible failure
-}
-
-public ValidationResult validateEmailFormat(String emailAddress) {
-    // Returns domain object instead of boolean
-}
-
-// ❌ Bad - Unclear contracts
-public Object doSomething(Object input) {
-    // What goes in? What comes out?
-}
+// ❌ BAD - Technical-only naming
+package com.example.utils;
+package com.example.helpers;
+package com.example.managers;
 ```
 
-### Java-specific Best Practices
+## 📋 Essential Principles
 
-#### Constructor & Builder Pattern
-```java
-// ✅ Good - Clear constructor with validation
-public class User {
-    private final String userId;
-    private final String email;
-    private final LocalDateTime createdAt;
-    
-    public User(String userId, String email, LocalDateTime createdAt) {
-        this.userId = Objects.requireNonNull(userId, "User ID cannot be null");
-        this.email = Objects.requireNonNull(email, "Email cannot be null");  
-        this.createdAt = Objects.requireNonNull(createdAt, "Created date cannot be null");
-    }
-}
-
-// For complex objects, use Builder pattern
-public class UserBuilder {
-    public static UserBuilder newUser() {
-        return new UserBuilder();
-    }
-    
-    public UserBuilder withEmail(String email) { /* ... */ }
-    public UserBuilder withPassword(String password) { /* ... */ }
-    public User build() { /* ... */ }
-}
-```
-
-#### Exception Handling
-```java
-// ✅ Good - Domain-specific exceptions
-public class UserRegistrationException extends Exception {
-    public UserRegistrationException(String message) {
-        super(message);
-    }
-}
-
-public class InvalidEmailFormatException extends UserRegistrationException {
-    public InvalidEmailFormatException(String email) {
-        super("Invalid email format: " + email);
-    }
-}
-```
-
-## Key Principles
-
-1. **Clear package structure** - Business-focused package naming
-2. **Screaming architecture** - Names reveal intent and purpose  
-3. **Strong typing** - Use domain objects, avoid primitive obsession
-4. **Clear contracts** - Method signatures express input/output clearly
-5. **Immutable objects** - Prefer final fields and immutable data structures
+1. **Screaming Architecture** - Names reveal business intent
+2. **Strong Typing** - Use domain objects, avoid primitive obsession  
+3. **Business-Focused Packages** - Organize by business domain, not technical layers
