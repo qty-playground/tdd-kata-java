@@ -86,7 +86,6 @@ class PasswordValidatorTest {
         PasswordValidator validator = new PasswordValidator();
         String password = "somepassword";
         List<String> expectedErrors = List.of(
-                "Password must be at least 8 characters",
                 "The password must contain at least 2 numbers",
                 "password must contain at least one capital letter",
                 "password must contain at least one special character"
