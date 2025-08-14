@@ -49,4 +49,19 @@ class PasswordValidatorTest {
         assertFalse(result.isValid());
         assertTrue(result.getErrors().contains(expectedErrorMessage));
     }
+
+    @Test
+    void should_ReturnInvalidAndErrorMessage_When_PasswordContainsNoSpecialCharacter() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String password = "Password12";
+        String expectedErrorMessage = "password must contain at least one special character";
+
+        // Act
+        PasswordValidationResult result = validator.validate(password);
+
+        // Assert
+        assertFalse(result.isValid());
+        assertTrue(result.getErrors().contains(expectedErrorMessage));
+    }
 }
