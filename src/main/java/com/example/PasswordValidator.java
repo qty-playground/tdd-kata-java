@@ -12,6 +12,16 @@ public class PasswordValidator {
             errors.add("Password must be at least 8 characters");
         }
 
+        int digitCount = 0;
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) {
+                digitCount++;
+            }
+        }
+        if (digitCount < 2) {
+            errors.add("The password must contain at least 2 numbers");
+        }
+
         if (!errors.isEmpty()) {
             return new PasswordValidationResult(false, errors);
         } else {
