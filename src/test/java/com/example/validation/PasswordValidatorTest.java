@@ -47,4 +47,18 @@ class PasswordValidatorTest {
         String expectedErrors = "Password must be at least 8 characters\nThe password must contain at least 2 numbers";
         assertEquals(expectedErrors, result.getErrorMessages());
     }
+    
+    @Test
+    void should_ReturnInvalidResult_When_PasswordDoesNotContainCapitalLetter() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String passwordWithoutCapital = "password12";  // No capital letter
+        
+        // Act
+        ValidationResult result = validator.validate(passwordWithoutCapital);
+        
+        // Assert
+        assertFalse(result.isValid());
+        assertEquals("password must contain at least one capital letter", result.getErrorMessages());
+    }
 }
