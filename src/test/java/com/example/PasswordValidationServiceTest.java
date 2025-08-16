@@ -72,6 +72,20 @@ class PasswordValidationServiceTest {
         
         // Assert
         assertFalse(validationResult.isValid());
-        assertEquals("Password must be at least 8 characters\nThe password must contain at least 2 numbers", validationResult.getErrorMessage());
+        assertEquals("Password must be at least 8 characters\nThe password must contain at least 2 numbers\npassword must contain at least one capital letter\npassword must contain at least one special character", validationResult.getErrorMessage());
+    }
+    
+    @Test
+    void should_return_valid_when_password_meets_all_requirements() {
+        // Arrange
+        PasswordValidationService passwordValidationService = new PasswordValidationService();
+        String validPassword = "Password12!";
+        
+        // Act
+        PasswordValidationResult validationResult = passwordValidationService.validate(validPassword);
+        
+        // Assert
+        assertTrue(validationResult.isValid());
+        assertEquals("", validationResult.getErrorMessage());
     }
 }

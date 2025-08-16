@@ -7,8 +7,10 @@ public class PasswordValidationService {
     private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
     
     public PasswordValidationResult validate(String password) {
+        StringBuilder errors = new StringBuilder();
+        
         if (password.length() < MINIMUM_PASSWORD_LENGTH) {
-            return new PasswordValidationResult(false, "Password must be at least 8 characters");
+            errors.append("Password must be at least 8 characters");
         }
         
         long numberCount = password.chars()
@@ -16,21 +18,34 @@ public class PasswordValidationService {
                 .count();
         
         if (numberCount < MINIMUM_NUMBERS_REQUIRED) {
-            return new PasswordValidationResult(false, "The password must contain at least 2 numbers");
+            if (errors.length() > 0) {
+                errors.append("\n");
+            }
+            errors.append("The password must contain at least 2 numbers");
         }
         
         boolean hasCapitalLetter = password.chars()
                 .anyMatch(Character::isUpperCase);
         
         if (!hasCapitalLetter) {
-            return new PasswordValidationResult(false, "password must contain at least one capital letter");
+            if (errors.length() > 0) {
+                errors.append("\n");
+            }
+            errors.append("password must contain at least one capital letter");
         }
         
         boolean hasSpecialCharacter = password.chars()
                 .anyMatch(ch -> SPECIAL_CHARACTERS.indexOf(ch) >= 0);
         
         if (!hasSpecialCharacter) {
-            return new PasswordValidationResult(false, "password must contain at least one special character");
+            if (errors.length() > 0) {
+                errors.append("\n");
+            }
+            errors.append("password must contain at least one special character");
+        }
+        
+        if (errors.length() > 0) {
+            return new PasswordValidationResult(false, errors.toString());
         }
         
         return new PasswordValidationResult(true, "");
