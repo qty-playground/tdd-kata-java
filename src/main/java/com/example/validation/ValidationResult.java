@@ -1,5 +1,8 @@
 package com.example.validation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents the result of a validation operation.
  * This class is immutable.
@@ -17,6 +20,22 @@ public class ValidationResult {
     public ValidationResult(boolean valid, String errorMessages) {
         this.valid = valid;
         this.errorMessages = errorMessages;
+    }
+    
+    /**
+     * Creates a new validation result with multiple error messages.
+     * 
+     * @param valid whether the validation passed
+     * @param errorMessagesList list of error messages
+     */
+    public ValidationResult(boolean valid, List<String> errorMessagesList) {
+        this.valid = valid;
+        
+        if (errorMessagesList == null || errorMessagesList.isEmpty()) {
+            this.errorMessages = "";
+        } else {
+            this.errorMessages = String.join("\n", errorMessagesList);
+        }
     }
     
     /**

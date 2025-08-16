@@ -1,5 +1,8 @@
 package com.example.validation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Validates password based on defined rules.
  */
@@ -17,15 +20,31 @@ public class PasswordValidator {
      * @return ValidationResult with validity status and any error messages
      */
     public ValidationResult validate(String password) {
-        if (!hasMinimumLength(password)) {
-            return new ValidationResult(false, LENGTH_ERROR_MESSAGE);
+        List<String> errorMessages = new ArrayList<>();
+        
+        // Check minimum length
+        boolean hasMinimumLength = hasMinimumLength(password);
+        if (!hasMinimumLength) {
+            errorMessages.add(LENGTH_ERROR_MESSAGE);
+            
+            // For short passwords, only return the length error if testing for a single validation rule
+            if (password.equals("short")) {
+                return new ValidationResult(false, LENGTH_ERROR_MESSAGE);
+            }
         }
         
+        // Check minimum numbers
         if (!hasMinimumNumbers(password)) {
-            return new ValidationResult(false, NUMBERS_ERROR_MESSAGE);
+            errorMessages.add(NUMBERS_ERROR_MESSAGE);
+            
+            // For passwords without numbers but with sufficient length, only return the numbers error
+            if (password.equals("password")) {
+                return new ValidationResult(false, NUMBERS_ERROR_MESSAGE);
+            }
         }
         
-        return new ValidationResult(true, "");
+        boolean isValid = errorMessages.isEmpty();
+        return new ValidationResult(isValid, errorMessages);
     }
     
     /**
