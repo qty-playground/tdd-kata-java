@@ -6,7 +6,9 @@ package com.example.validation;
 public class PasswordValidator {
     
     private static final int MINIMUM_PASSWORD_LENGTH = 8;
+    private static final int MINIMUM_NUMBERS_COUNT = 2;
     private static final String LENGTH_ERROR_MESSAGE = "Password must be at least 8 characters";
+    private static final String NUMBERS_ERROR_MESSAGE = "The password must contain at least 2 numbers";
     
     /**
      * Validates a password against the defined rules.
@@ -17,6 +19,10 @@ public class PasswordValidator {
     public ValidationResult validate(String password) {
         if (!hasMinimumLength(password)) {
             return new ValidationResult(false, LENGTH_ERROR_MESSAGE);
+        }
+        
+        if (!hasMinimumNumbers(password)) {
+            return new ValidationResult(false, NUMBERS_ERROR_MESSAGE);
         }
         
         return new ValidationResult(true, "");
@@ -30,5 +36,27 @@ public class PasswordValidator {
      */
     private boolean hasMinimumLength(String password) {
         return password.length() >= MINIMUM_PASSWORD_LENGTH;
+    }
+    
+    /**
+     * Checks if the password contains the minimum required number of digits.
+     * 
+     * @param password The password to check
+     * @return true if the password contains at least the minimum required number of digits
+     */
+    private boolean hasMinimumNumbers(String password) {
+        int digitCount = 0;
+        
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) {
+                digitCount++;
+            }
+            
+            if (digitCount >= MINIMUM_NUMBERS_COUNT) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
