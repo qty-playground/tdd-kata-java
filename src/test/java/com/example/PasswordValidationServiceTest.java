@@ -46,4 +46,18 @@ class PasswordValidationServiceTest {
         assertFalse(validationResult.isValid());
         assertEquals("password must contain at least one capital letter", validationResult.getErrorMessage());
     }
+    
+    @Test
+    void should_return_error_when_password_has_no_special_character() {
+        // Arrange
+        PasswordValidationService passwordValidationService = new PasswordValidationService();
+        String passwordWithoutSpecialChar = "Password12";
+        
+        // Act
+        PasswordValidationResult validationResult = passwordValidationService.validate(passwordWithoutSpecialChar);
+        
+        // Assert
+        assertFalse(validationResult.isValid());
+        assertEquals("password must contain at least one special character", validationResult.getErrorMessage());
+    }
 }
