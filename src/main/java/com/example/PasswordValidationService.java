@@ -4,6 +4,7 @@ public class PasswordValidationService {
     
     private static final int MINIMUM_PASSWORD_LENGTH = 8;
     private static final int MINIMUM_NUMBERS_REQUIRED = 2;
+    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
     
     public PasswordValidationResult validate(String password) {
         if (password.length() < MINIMUM_PASSWORD_LENGTH) {
@@ -25,9 +26,8 @@ public class PasswordValidationService {
             return new PasswordValidationResult(false, "password must contain at least one capital letter");
         }
         
-        String specialChars = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
         boolean hasSpecialCharacter = password.chars()
-                .anyMatch(ch -> specialChars.indexOf(ch) >= 0);
+                .anyMatch(ch -> SPECIAL_CHARACTERS.indexOf(ch) >= 0);
         
         if (!hasSpecialCharacter) {
             return new PasswordValidationResult(false, "password must contain at least one special character");
