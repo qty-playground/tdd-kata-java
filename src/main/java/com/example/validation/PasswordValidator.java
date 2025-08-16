@@ -45,18 +45,8 @@ public class PasswordValidator {
      * @return true if the password contains at least the minimum required number of digits
      */
     private boolean hasMinimumNumbers(String password) {
-        int digitCount = 0;
-        
-        for (char c : password.toCharArray()) {
-            if (Character.isDigit(c)) {
-                digitCount++;
-            }
-            
-            if (digitCount >= MINIMUM_NUMBERS_COUNT) {
-                return true;
-            }
-        }
-        
-        return false;
+        return password.chars()
+                .filter(Character::isDigit)
+                .count() >= MINIMUM_NUMBERS_COUNT;
     }
 }
