@@ -60,4 +60,18 @@ class PasswordValidationServiceTest {
         assertFalse(validationResult.isValid());
         assertEquals("password must contain at least one special character", validationResult.getErrorMessage());
     }
+    
+    @Test
+    void should_return_multiple_error_messages_when_password_fails_multiple_rules() {
+        // Arrange
+        PasswordValidationService passwordValidationService = new PasswordValidationService();
+        String passwordWithMultipleErrors = "short";
+        
+        // Act
+        PasswordValidationResult validationResult = passwordValidationService.validate(passwordWithMultipleErrors);
+        
+        // Assert
+        assertFalse(validationResult.isValid());
+        assertEquals("Password must be at least 8 characters\nThe password must contain at least 2 numbers", validationResult.getErrorMessage());
+    }
 }
