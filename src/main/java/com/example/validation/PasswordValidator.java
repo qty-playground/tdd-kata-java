@@ -12,7 +12,11 @@ public class PasswordValidator {
      * @return ValidationResult with validity status and any error messages
      */
     public ValidationResult validate(String password) {
-        // Not implemented yet - will fail test
-        return null;
+        // Minimal implementation to pass the first test
+        if (password.length() < 8) {
+            return new ValidationResult(false, "Password must be at least 8 characters");
+        }
+        
+        return new ValidationResult(true, "");
     }
 }
