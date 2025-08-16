@@ -18,6 +18,13 @@ public class PasswordValidationService {
             return new PasswordValidationResult(false, "The password must contain at least 2 numbers");
         }
         
+        boolean hasCapitalLetter = password.chars()
+                .anyMatch(Character::isUpperCase);
+        
+        if (!hasCapitalLetter) {
+            return new PasswordValidationResult(false, "password must contain at least one capital letter");
+        }
+        
         return new PasswordValidationResult(true, "");
     }
 }
