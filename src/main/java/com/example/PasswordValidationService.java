@@ -3,6 +3,7 @@ package com.example;
 public class PasswordValidationService {
     
     private static final int MINIMUM_PASSWORD_LENGTH = 8;
+    private static final int MINIMUM_NUMBERS_REQUIRED = 2;
     
     public PasswordValidationResult validate(String password) {
         if (password.length() < MINIMUM_PASSWORD_LENGTH) {
@@ -13,7 +14,7 @@ public class PasswordValidationService {
                 .filter(Character::isDigit)
                 .count();
         
-        if (numberCount < 2) {
+        if (numberCount < MINIMUM_NUMBERS_REQUIRED) {
             return new PasswordValidationResult(false, "The password must contain at least 2 numbers");
         }
         
