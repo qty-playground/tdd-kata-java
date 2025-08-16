@@ -10,7 +10,7 @@ public class PasswordValidationService {
         StringBuilder errors = new StringBuilder();
         
         if (password.length() < MINIMUM_PASSWORD_LENGTH) {
-            errors.append("Password must be at least 8 characters");
+            addErrorIfNeeded(errors, "Password must be at least 8 characters");
         }
         
         long numberCount = password.chars()
@@ -18,30 +18,21 @@ public class PasswordValidationService {
                 .count();
         
         if (numberCount < MINIMUM_NUMBERS_REQUIRED) {
-            if (errors.length() > 0) {
-                errors.append("\n");
-            }
-            errors.append("The password must contain at least 2 numbers");
+            addErrorIfNeeded(errors, "The password must contain at least 2 numbers");
         }
         
         boolean hasCapitalLetter = password.chars()
                 .anyMatch(Character::isUpperCase);
         
         if (!hasCapitalLetter) {
-            if (errors.length() > 0) {
-                errors.append("\n");
-            }
-            errors.append("password must contain at least one capital letter");
+            addErrorIfNeeded(errors, "password must contain at least one capital letter");
         }
         
         boolean hasSpecialCharacter = password.chars()
                 .anyMatch(ch -> SPECIAL_CHARACTERS.indexOf(ch) >= 0);
         
         if (!hasSpecialCharacter) {
-            if (errors.length() > 0) {
-                errors.append("\n");
-            }
-            errors.append("password must contain at least one special character");
+            addErrorIfNeeded(errors, "password must contain at least one special character");
         }
         
         if (errors.length() > 0) {
@@ -49,5 +40,12 @@ public class PasswordValidationService {
         }
         
         return new PasswordValidationResult(true, "");
+    }
+    
+    private void addErrorIfNeeded(StringBuilder errors, String errorMessage) {
+        if (errors.length() > 0) {
+            errors.append("\n");
+        }
+        errors.append(errorMessage);
     }
 }
