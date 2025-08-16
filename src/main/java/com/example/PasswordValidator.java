@@ -7,6 +7,7 @@ public class PasswordValidator {
 
     private static final String MIN_LENGTH_ERROR = "Password must be at least 8 characters";
     private static final String MIN_DIGITS_ERROR = "The password must contain at least 2 numbers";
+    private static final String CAPITAL_LETTER_ERROR = "password must contain at least one capital letter";
 
     public ValidationResult validate(String password) {
         List<String> errors = new ArrayList<>();
@@ -20,15 +21,24 @@ public class PasswordValidator {
 
         // Requirement 2: At least 2 numbers
         int digitCount = 0;
+        boolean hasCapitalLetter = false;
         if (password != null) {
             for (char c : password.toCharArray()) {
                 if (Character.isDigit(c)) {
                     digitCount++;
+                } else if (Character.isUpperCase(c)) {
+                    hasCapitalLetter = true;
                 }
             }
         }
         if (digitCount < 2) {
             errors.add(MIN_DIGITS_ERROR);
+            isValid = false;
+        }
+
+        // Requirement 3: At least one capital letter
+        if (!hasCapitalLetter) {
+            errors.add(CAPITAL_LETTER_ERROR);
             isValid = false;
         }
 
