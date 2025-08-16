@@ -16,7 +16,7 @@ class PasswordValidationServiceTest {
         
         // Assert
         assertFalse(validationResult.isValid());
-        assertEquals("Password must be at least 8 characters", validationResult.getErrorMessage());
+        assertEquals("Password must be at least 8 characters\nThe password must contain at least 2 numbers\npassword must contain at least one capital letter\npassword must contain at least one special character", validationResult.getErrorMessage());
     }
     
     @Test
@@ -30,7 +30,7 @@ class PasswordValidationServiceTest {
         
         // Assert
         assertFalse(validationResult.isValid());
-        assertEquals("The password must contain at least 2 numbers", validationResult.getErrorMessage());
+        assertEquals("The password must contain at least 2 numbers\npassword must contain at least one capital letter\npassword must contain at least one special character", validationResult.getErrorMessage());
     }
     
     @Test
@@ -44,7 +44,7 @@ class PasswordValidationServiceTest {
         
         // Assert
         assertFalse(validationResult.isValid());
-        assertEquals("password must contain at least one capital letter", validationResult.getErrorMessage());
+        assertEquals("password must contain at least one capital letter\npassword must contain at least one special character", validationResult.getErrorMessage());
     }
     
     @Test
