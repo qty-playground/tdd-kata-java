@@ -8,6 +8,15 @@ public class PasswordValidationService {
         if (password.length() < MINIMUM_PASSWORD_LENGTH) {
             return new PasswordValidationResult(false, "Password must be at least 8 characters");
         }
+        
+        long numberCount = password.chars()
+                .filter(Character::isDigit)
+                .count();
+        
+        if (numberCount < 2) {
+            return new PasswordValidationResult(false, "The password must contain at least 2 numbers");
+        }
+        
         return new PasswordValidationResult(true, "");
     }
 }
