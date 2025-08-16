@@ -61,4 +61,18 @@ class PasswordValidatorTest {
         assertFalse(result.isValid());
         assertEquals("password must contain at least one capital letter", result.getErrorMessages());
     }
+    
+    @Test
+    void should_ReturnInvalidResult_When_PasswordDoesNotContainSpecialCharacter() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String passwordWithoutSpecialChar = "Password12";  // No special character
+        
+        // Act
+        ValidationResult result = validator.validate(passwordWithoutSpecialChar);
+        
+        // Assert
+        assertFalse(result.isValid());
+        assertEquals("password must contain at least one special character", result.getErrorMessages());
+    }
 }
