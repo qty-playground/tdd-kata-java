@@ -18,4 +18,18 @@ class PasswordValidationServiceTest {
         assertFalse(validationResult.isValid());
         assertEquals("Password must be at least 8 characters", validationResult.getErrorMessage());
     }
+    
+    @Test
+    void should_return_error_when_password_has_less_than_2_numbers() {
+        // Arrange
+        PasswordValidationService passwordValidationService = new PasswordValidationService();
+        String passwordWithoutNumbers = "password";
+        
+        // Act
+        PasswordValidationResult validationResult = passwordValidationService.validate(passwordWithoutNumbers);
+        
+        // Assert
+        assertFalse(validationResult.isValid());
+        assertEquals("The password must contain at least 2 numbers", validationResult.getErrorMessage());
+    }
 }
