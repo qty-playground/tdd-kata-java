@@ -1,10 +1,7 @@
 package com.example.validation;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.IntPredicate;
@@ -32,27 +29,6 @@ public final class PasswordValidator {
     // Special characters for password validation
     private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
     
-    // Special test cases for backward compatibility with existing tests
-    private static final Map<String, ValidationResult> SPECIAL_TEST_CASES;
-    
-    // Static initialization of special test cases
-    static {
-        Map<String, ValidationResult> specialCases = new HashMap<>();
-        
-        // Single error test cases
-        specialCases.put("short", ValidationResult.invalid(LENGTH_ERROR_MESSAGE));
-        specialCases.put("password", ValidationResult.invalid(NUMBERS_ERROR_MESSAGE));
-        specialCases.put("password12", ValidationResult.invalid(CAPITAL_LETTER_ERROR_MESSAGE));
-        specialCases.put("Password12", ValidationResult.invalid(SPECIAL_CHARACTER_ERROR_MESSAGE));
-        
-        // Multiple errors test case - specific test fixture used in original tests
-        List<String> multipleErrors = new ArrayList<>();
-        multipleErrors.add(LENGTH_ERROR_MESSAGE);
-        multipleErrors.add(NUMBERS_ERROR_MESSAGE);
-        specialCases.put("pass", ValidationResult.invalid(multipleErrors));
-        
-        SPECIAL_TEST_CASES = Collections.unmodifiableMap(specialCases);
-    }
     
     /**
      * Validates a password against the defined security rules.
@@ -72,10 +48,6 @@ public final class PasswordValidator {
     public ValidationResult validate(String password) {
         Objects.requireNonNull(password, "Password cannot be null");
         
-        // Handle special test cases for backward compatibility
-        if (SPECIAL_TEST_CASES.containsKey(password)) {
-            return SPECIAL_TEST_CASES.get(password);
-        }
         
         // Normal validation flow - collect all validation errors
         List<String> validationErrors = collectValidationErrors(password);
@@ -95,7 +67,7 @@ public final class PasswordValidator {
     private List<String> collectValidationErrors(String password) {
         List<String> errorMessages = new ArrayList<>();
         
-        // Apply all validation rules and collect error messages
+        // Normal validation flow - collect all validation errors
         applyValidationRule(errorMessages, password, this::hasMinimumLength, LENGTH_ERROR_MESSAGE);
         applyValidationRule(errorMessages, password, this::hasMinimumNumbers, NUMBERS_ERROR_MESSAGE);
         applyValidationRule(errorMessages, password, this::hasCapitalLetter, CAPITAL_LETTER_ERROR_MESSAGE);

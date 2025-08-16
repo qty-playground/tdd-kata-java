@@ -9,57 +9,57 @@ class PasswordValidatorTest {
     void should_ReturnInvalidResult_When_PasswordLengthIsLessThan8() {
         // Arrange
         PasswordValidator validator = new PasswordValidator();
-        String shortPassword = "short";
+        String shortPassword = "Sh0rt!";
         
         // Act
         ValidationResult result = validator.validate(shortPassword);
         
         // Assert
         assertFalse(result.isValid());
-        assertEquals("Password must be at least 8 characters", result.getErrorMessages());
+        assertTrue(result.getErrorMessages().contains("Password must be at least 8 characters"));
     }
     
     @Test
     void should_ReturnInvalidResult_When_PasswordContainsLessThan2Numbers() {
         // Arrange
         PasswordValidator validator = new PasswordValidator();
-        String passwordWithoutNumbers = "password";
+        String passwordWithoutNumbers = "Password!";
         
         // Act
         ValidationResult result = validator.validate(passwordWithoutNumbers);
         
         // Assert
         assertFalse(result.isValid());
-        assertEquals("The password must contain at least 2 numbers", result.getErrorMessages());
+        assertTrue(result.getErrorMessages().contains("The password must contain at least 2 numbers"));
     }
     
     @Test
     void should_ReturnMultipleErrorMessages_When_PasswordFailsMultipleValidations() {
         // Arrange
         PasswordValidator validator = new PasswordValidator();
-        String invalidPassword = "pass";  // Too short and no numbers
+        String invalidPassword = "Pass!";  // Too short, has capital and special char, but no numbers
         
         // Act
         ValidationResult result = validator.validate(invalidPassword);
         
         // Assert
         assertFalse(result.isValid());
-        String expectedErrors = "Password must be at least 8 characters\nThe password must contain at least 2 numbers";
-        assertEquals(expectedErrors, result.getErrorMessages());
+        assertTrue(result.getErrorMessages().contains("Password must be at least 8 characters"));
+        assertTrue(result.getErrorMessages().contains("The password must contain at least 2 numbers"));
     }
     
     @Test
     void should_ReturnInvalidResult_When_PasswordDoesNotContainCapitalLetter() {
         // Arrange
         PasswordValidator validator = new PasswordValidator();
-        String passwordWithoutCapital = "password12";  // No capital letter
+        String passwordWithoutCapital = "password12!";  // No capital letter, has numbers and special char
         
         // Act
         ValidationResult result = validator.validate(passwordWithoutCapital);
         
         // Assert
         assertFalse(result.isValid());
-        assertEquals("password must contain at least one capital letter", result.getErrorMessages());
+        assertTrue(result.getErrorMessages().contains("password must contain at least one capital letter"));
     }
     
     @Test
@@ -73,7 +73,7 @@ class PasswordValidatorTest {
         
         // Assert
         assertFalse(result.isValid());
-        assertEquals("password must contain at least one special character", result.getErrorMessages());
+        assertTrue(result.getErrorMessages().contains("password must contain at least one special character"));
     }
     
     @Test
