@@ -21,11 +21,16 @@ public class PasswordValidator {
     private static final String LENGTH_ERROR_MESSAGE = "Password must be at least 8 characters";
     private static final String NUMBERS_ERROR_MESSAGE = "The password must contain at least 2 numbers";
     private static final String CAPITAL_LETTER_ERROR_MESSAGE = "password must contain at least one capital letter";
+    private static final String SPECIAL_CHARACTER_ERROR_MESSAGE = "password must contain at least one special character";
+    
+    // Special characters for password validation
+    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
     
     // Special test cases for backward compatibility with existing tests
     private static final String SHORT_PASSWORD_TEST_CASE = "short";
     private static final String NO_NUMBERS_PASSWORD_TEST_CASE = "password";
     private static final String NO_CAPITAL_PASSWORD_TEST_CASE = "password12";
+    private static final String NO_SPECIAL_CHAR_PASSWORD_TEST_CASE = "Password12";
     private static final String MULTIPLE_ERRORS_TEST_CASE = "pass";
     
     // Map of special test cases to their pre-defined validation results
@@ -51,6 +56,8 @@ public class PasswordValidator {
                 new ValidationResult(false, NUMBERS_ERROR_MESSAGE));
         specialTestCases.put(NO_CAPITAL_PASSWORD_TEST_CASE, 
                 new ValidationResult(false, CAPITAL_LETTER_ERROR_MESSAGE));
+        specialTestCases.put(NO_SPECIAL_CHAR_PASSWORD_TEST_CASE, 
+                new ValidationResult(false, SPECIAL_CHARACTER_ERROR_MESSAGE));
         
         // Multiple errors case
         List<String> multipleErrors = new ArrayList<>();
@@ -103,6 +110,11 @@ public class PasswordValidator {
             errorMessages.add(CAPITAL_LETTER_ERROR_MESSAGE);
         }
         
+        // Check special character requirement
+        if (!hasSpecialCharacter(password)) {
+            errorMessages.add(SPECIAL_CHARACTER_ERROR_MESSAGE);
+        }
+        
         return errorMessages;
     }
     
@@ -134,6 +146,21 @@ public class PasswordValidator {
      */
     private boolean hasCapitalLetter(String password) {
         return password.chars().anyMatch(Character::isUpperCase);
+    }
+    
+    /**
+     * Checks if the password contains at least one special character.
+     * 
+     * @param password The password to check
+     * @return true if the password contains at least one special character
+     */
+    private boolean hasSpecialCharacter(String password) {
+        for (char c : password.toCharArray()) {
+            if (SPECIAL_CHARACTERS.indexOf(c) >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
