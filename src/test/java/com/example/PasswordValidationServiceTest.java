@@ -32,4 +32,18 @@ class PasswordValidationServiceTest {
         assertFalse(validationResult.isValid());
         assertEquals("The password must contain at least 2 numbers", validationResult.getErrorMessage());
     }
+    
+    @Test
+    void should_return_error_when_password_has_no_capital_letter() {
+        // Arrange
+        PasswordValidationService passwordValidationService = new PasswordValidationService();
+        String passwordWithoutCapital = "password12";
+        
+        // Act
+        PasswordValidationResult validationResult = passwordValidationService.validate(passwordWithoutCapital);
+        
+        // Assert
+        assertFalse(validationResult.isValid());
+        assertEquals("password must contain at least one capital letter", validationResult.getErrorMessage());
+    }
 }
