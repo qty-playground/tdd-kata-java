@@ -75,4 +75,27 @@ class PasswordValidatorTest {
         assertFalse(result.isValid());
         assertEquals("password must contain at least one special character", result.getErrorMessages());
     }
+    
+    @Test
+    void should_ReturnAllErrorMessages_When_PasswordFailsAllValidations() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String invalidPassword = "a";  // Too short, no numbers, no capital, no special char
+        
+        // Act
+        ValidationResult result = validator.validate(invalidPassword);
+        
+        // Assert
+        assertFalse(result.isValid());
+        
+        // Check all expected error messages are present
+        String errorMessages = result.getErrorMessages();
+        assertTrue(errorMessages.contains("Password must be at least 8 characters"), "Should contain length error");
+        assertTrue(errorMessages.contains("The password must contain at least 2 numbers"), "Should contain numbers error");
+        assertTrue(errorMessages.contains("password must contain at least one capital letter"), "Should contain capital letter error");
+        assertTrue(errorMessages.contains("password must contain at least one special character"), "Should contain special character error");
+        
+        // Check the number of error messages (should be 4 lines = 3 newlines)
+        assertEquals(3, errorMessages.chars().filter(ch -> ch == '\n').count(), "Should have 4 error messages");
+    }
 }

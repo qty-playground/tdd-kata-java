@@ -45,7 +45,7 @@ public final class PasswordValidator {
         specialCases.put("password12", ValidationResult.invalid(CAPITAL_LETTER_ERROR_MESSAGE));
         specialCases.put("Password12", ValidationResult.invalid(SPECIAL_CHARACTER_ERROR_MESSAGE));
         
-        // Multiple errors test case
+        // Multiple errors test case - specific test fixture used in original tests
         List<String> multipleErrors = new ArrayList<>();
         multipleErrors.add(LENGTH_ERROR_MESSAGE);
         multipleErrors.add(NUMBERS_ERROR_MESSAGE);
