@@ -25,6 +25,14 @@ public class PasswordValidationService {
             return new PasswordValidationResult(false, "password must contain at least one capital letter");
         }
         
+        String specialChars = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
+        boolean hasSpecialCharacter = password.chars()
+                .anyMatch(ch -> specialChars.indexOf(ch) >= 0);
+        
+        if (!hasSpecialCharacter) {
+            return new PasswordValidationResult(false, "password must contain at least one special character");
+        }
+        
         return new PasswordValidationResult(true, "");
     }
 }
