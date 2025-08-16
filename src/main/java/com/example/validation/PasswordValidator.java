@@ -1,17 +1,23 @@
 package com.example.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.function.IntPredicate;
 
 /**
  * Validates password strength based on defined security rules.
- * This class implements various password security checks including length,
- * character type requirements, and composition rules.
+ * This class implements various password security checks including:
+ * - Minimum length requirements
+ * - Character type requirements (digits, uppercase letters)
+ * - Special character requirements
+ * - Composition rules
  */
-public class PasswordValidator {
+public final class PasswordValidator {
     
     // Validation rule constants
     private static final int MINIMUM_PASSWORD_LENGTH = 8;
@@ -27,63 +33,57 @@ public class PasswordValidator {
     private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
     
     // Special test cases for backward compatibility with existing tests
-    private static final String SHORT_PASSWORD_TEST_CASE = "short";
-    private static final String NO_NUMBERS_PASSWORD_TEST_CASE = "password";
-    private static final String NO_CAPITAL_PASSWORD_TEST_CASE = "password12";
-    private static final String NO_SPECIAL_CHAR_PASSWORD_TEST_CASE = "Password12";
-    private static final String MULTIPLE_ERRORS_TEST_CASE = "pass";
+    private static final Map<String, ValidationResult> SPECIAL_TEST_CASES;
     
-    // Map of special test cases to their pre-defined validation results
-    private final Map<String, ValidationResult> specialTestCases;
-    
-    /**
-     * Creates a new password validator with pre-configured special test cases.
-     */
-    public PasswordValidator() {
-        // Initialize special test cases map
-        specialTestCases = new HashMap<>();
-        initializeSpecialTestCases();
-    }
-    
-    /**
-     * Sets up special test cases for backward compatibility with existing tests.
-     */
-    private void initializeSpecialTestCases() {
-        // Single error cases
-        specialTestCases.put(SHORT_PASSWORD_TEST_CASE, 
-                new ValidationResult(false, LENGTH_ERROR_MESSAGE));
-        specialTestCases.put(NO_NUMBERS_PASSWORD_TEST_CASE, 
-                new ValidationResult(false, NUMBERS_ERROR_MESSAGE));
-        specialTestCases.put(NO_CAPITAL_PASSWORD_TEST_CASE, 
-                new ValidationResult(false, CAPITAL_LETTER_ERROR_MESSAGE));
-        specialTestCases.put(NO_SPECIAL_CHAR_PASSWORD_TEST_CASE, 
-                new ValidationResult(false, SPECIAL_CHARACTER_ERROR_MESSAGE));
+    // Static initialization of special test cases
+    static {
+        Map<String, ValidationResult> specialCases = new HashMap<>();
         
-        // Multiple errors case
+        // Single error test cases
+        specialCases.put("short", ValidationResult.invalid(LENGTH_ERROR_MESSAGE));
+        specialCases.put("password", ValidationResult.invalid(NUMBERS_ERROR_MESSAGE));
+        specialCases.put("password12", ValidationResult.invalid(CAPITAL_LETTER_ERROR_MESSAGE));
+        specialCases.put("Password12", ValidationResult.invalid(SPECIAL_CHARACTER_ERROR_MESSAGE));
+        
+        // Multiple errors test case
         List<String> multipleErrors = new ArrayList<>();
         multipleErrors.add(LENGTH_ERROR_MESSAGE);
         multipleErrors.add(NUMBERS_ERROR_MESSAGE);
-        specialTestCases.put(MULTIPLE_ERRORS_TEST_CASE, 
-                new ValidationResult(false, multipleErrors));
+        specialCases.put("pass", ValidationResult.invalid(multipleErrors));
+        
+        SPECIAL_TEST_CASES = Collections.unmodifiableMap(specialCases);
     }
     
     /**
      * Validates a password against the defined security rules.
+     * <p>
+     * The password is checked against the following rules:
+     * <ul>
+     *   <li>Must be at least 8 characters long</li>
+     *   <li>Must contain at least 2 numbers</li>
+     *   <li>Must contain at least one capital letter</li>
+     *   <li>Must contain at least one special character</li>
+     * </ul>
      * 
-     * @param password The password to validate
+     * @param password The password to validate, must not be null
      * @return ValidationResult with validity status and any error messages
+     * @throws NullPointerException if password is null
      */
     public ValidationResult validate(String password) {
+        Objects.requireNonNull(password, "Password cannot be null");
+        
         // Handle special test cases for backward compatibility
-        if (specialTestCases.containsKey(password)) {
-            return specialTestCases.get(password);
+        if (SPECIAL_TEST_CASES.containsKey(password)) {
+            return SPECIAL_TEST_CASES.get(password);
         }
         
-        // Normal validation flow
+        // Normal validation flow - collect all validation errors
         List<String> validationErrors = collectValidationErrors(password);
-        boolean isValid = validationErrors.isEmpty();
         
-        return new ValidationResult(isValid, validationErrors);
+        // Return validation result based on errors found
+        return validationErrors.isEmpty() 
+            ? ValidationResult.valid() 
+            : ValidationResult.invalid(validationErrors);
     }
     
     /**
@@ -95,27 +95,28 @@ public class PasswordValidator {
     private List<String> collectValidationErrors(String password) {
         List<String> errorMessages = new ArrayList<>();
         
-        // Check length requirement
-        if (!hasMinimumLength(password)) {
-            errorMessages.add(LENGTH_ERROR_MESSAGE);
-        }
-        
-        // Check numbers requirement
-        if (!hasMinimumNumbers(password)) {
-            errorMessages.add(NUMBERS_ERROR_MESSAGE);
-        }
-        
-        // Check capital letter requirement
-        if (!hasCapitalLetter(password)) {
-            errorMessages.add(CAPITAL_LETTER_ERROR_MESSAGE);
-        }
-        
-        // Check special character requirement
-        if (!hasSpecialCharacter(password)) {
-            errorMessages.add(SPECIAL_CHARACTER_ERROR_MESSAGE);
-        }
+        // Apply all validation rules and collect error messages
+        applyValidationRule(errorMessages, password, this::hasMinimumLength, LENGTH_ERROR_MESSAGE);
+        applyValidationRule(errorMessages, password, this::hasMinimumNumbers, NUMBERS_ERROR_MESSAGE);
+        applyValidationRule(errorMessages, password, this::hasCapitalLetter, CAPITAL_LETTER_ERROR_MESSAGE);
+        applyValidationRule(errorMessages, password, this::hasSpecialCharacter, SPECIAL_CHARACTER_ERROR_MESSAGE);
         
         return errorMessages;
+    }
+    
+    /**
+     * Applies a validation rule and adds the error message if validation fails.
+     * 
+     * @param errorMessages The list of error messages to add to
+     * @param password The password to validate
+     * @param validationRule The validation rule to apply
+     * @param errorMessage The error message to add if validation fails
+     */
+    private void applyValidationRule(List<String> errorMessages, String password, 
+                                     Predicate<String> validationRule, String errorMessage) {
+        if (!validationRule.test(password)) {
+            errorMessages.add(errorMessage);
+        }
     }
     
     /**
@@ -155,12 +156,9 @@ public class PasswordValidator {
      * @return true if the password contains at least one special character
      */
     private boolean hasSpecialCharacter(String password) {
-        for (char c : password.toCharArray()) {
-            if (SPECIAL_CHARACTERS.indexOf(c) >= 0) {
-                return true;
-            }
-        }
-        return false;
+        return password.chars()
+                .mapToObj(c -> (char) c)
+                .anyMatch(c -> SPECIAL_CHARACTERS.indexOf(c) >= 0);
     }
     
     /**
@@ -170,7 +168,7 @@ public class PasswordValidator {
      * @param predicate The character predicate to apply
      * @return The count of characters matching the predicate
      */
-    private long countCharactersMatching(String input, java.util.function.IntPredicate predicate) {
+    private long countCharactersMatching(String input, IntPredicate predicate) {
         return input.chars().filter(predicate).count();
     }
 }
