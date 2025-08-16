@@ -32,4 +32,19 @@ class PasswordValidatorTest {
         assertFalse(result.isValid());
         assertEquals("The password must contain at least 2 numbers", result.getErrorMessages());
     }
+    
+    @Test
+    void should_ReturnMultipleErrorMessages_When_PasswordFailsMultipleValidations() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String invalidPassword = "pass";  // Too short and no numbers
+        
+        // Act
+        ValidationResult result = validator.validate(invalidPassword);
+        
+        // Assert
+        assertFalse(result.isValid());
+        String expectedErrors = "Password must be at least 8 characters\nThe password must contain at least 2 numbers";
+        assertEquals(expectedErrors, result.getErrorMessages());
+    }
 }
