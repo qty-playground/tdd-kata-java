@@ -35,6 +35,21 @@ class PasswordValidatorTest {
         assertFalse(result.isValid(), "Password should be invalid due to insufficient numbers.");
     }
 
+    @Test
+    void should_returnError_when_passwordHasNoCapitalLetter() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+        String password = "password123"; // No capital letter
+        String expectedError = "password must contain at least one capital letter";
+
+        // Act
+        ValidationResult result = validator.validate(password);
+
+        // Assert
+        assertTrue(result.getErrors().contains(expectedError), "Error message for missing capital letter not found.");
+        assertFalse(result.isValid(), "Password should be invalid due to missing capital letter.");
+    }
+
     // This test is for multiple errors, but we'll focus on implementing one rule at a time.
     // It will fail until all rules are implemented.
     @Test
