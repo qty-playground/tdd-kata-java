@@ -12,11 +12,10 @@ public class PasswordValidatorTest {
     }
 
     @Test
-    void shouldFailOnMinLength_Test2_Skeleton() {
-        // Red phase skeleton: this test intentionally asserts the opposite
-        // of the intended green behavior to force a failure before
-        // implementing the actual Test 2 requirements.
+    void shouldFailOnMinLength_Test2() {
         PasswordValidator.ValidationResult result = PasswordValidator.validate("Ab1!");
-        assertTrue(result.isValid, "Skeleton should fail to pass with short password");
+        // Red phase: expect invalid due to min length; test will fail until code is adjusted
+        assertFalse(result.isValid, "Password shorter than 8 chars should be invalid");
+        assertTrue(result.errors.contains("Password must be at least 8 characters"));
     }
 }
