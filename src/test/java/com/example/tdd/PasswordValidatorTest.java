@@ -37,6 +37,16 @@ public class PasswordValidatorTest {
     }
 
     @Test
+    void shouldReportMultipleErrors_Test6() {
+        PasswordValidator.ValidationResult result = PasswordValidator.validate("abc");
+        assertFalse(result.isValid, "Multiple errors should be reported");
+        assertTrue(result.errors.contains("Password must be at least 8 characters"));
+        assertTrue(result.errors.contains("The password must contain at least 2 numbers"));
+        assertTrue(result.errors.contains("Password must contain at least one capital letter"));
+        assertTrue(result.errors.contains("Password must contain at least one special character"));
+    }
+
+    @Test
     void shouldFailOnNumbersCount_Test3() {
         PasswordValidator.ValidationResult result = PasswordValidator.validate("Abcdefgh");
         // Expect invalid due to missing numbers; ensure specific error is present
