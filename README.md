@@ -73,32 +73,36 @@ gradle test        # Fallback
 
 ## How to Use This Repository
 
-### 📋 TDD Development Prompts
+### 📋 Unified TDD System
 
-This repository contains specialized prompts to guide your Java TDD development:
+This repository uses a unified state machine approach to guide your Java TDD development:
 
-#### Core TDD Flow
-- **`@prompts/tdd/tdd-session.prompt`** - Main TDD session controller
-- **`@prompts/tdd/red-phase.prompt`** - Write failing JUnit tests
-- **`@prompts/tdd/green-phase.prompt`** - Minimal Java implementation
-- **`@prompts/tdd/refactor-phase.prompt`** - Code quality improvements
+- **`@unified_tdd_system.md`** - Complete TDD workflow state machine that handles the entire Red-Green-Refactor cycle
 
-#### Supporting Guides
-- **`@prompts/coding-style.prompt`** - Java SE coding standards
-- **`@prompts/overview.prompt`** - Complete workflow guide
+### State Machine Workflow
 
-### 🎯 Practice Exercises
+The unified system operates as a state machine with the following flow:
 
-- **`@labs/foobarbar-tdd.prompt`** - Classic TDD kata with Java focus
+1. **Start**: Type "go" to begin the TDD cycle
+2. **Automated Flow**: The system automatically progresses through:
+   - 📋 **Reading Plan**: Extracts next task from `plan.md`
+   - 🔴 **Red Phase**: Creates failing test
+   - 🟢 **Green Phase**: Implements minimal passing code
+   - ✅ **Verification**: Runs full test suite
+   - 🔧 **Structural Tidying**: Applies "Tidy First" refactoring
+   - 🚀 **Behavioral Refactoring**: Improves code quality
+   - 💾 **Committing**: Creates standardized commit message
 
-### Recommended Workflow
+### Getting Started
 
-1. **Start a TDD session**: Use `@prompts/tdd/tdd-session.prompt`
-2. **Follow the Red-Green-Refactor cycle**:
-   - 🔴 **Red**: Use `@prompts/tdd/red-phase.prompt` 
-   - 🟢 **Green**: Use `@prompts/tdd/green-phase.prompt`
-   - 🔧 **Refactor**: Use `@prompts/tdd/refactor-phase.prompt`
-3. **Maintain code quality**: Reference `@prompts/coding-style.prompt`
+1. **Create a `plan.md` file** with your development tasks:
+   ```markdown
+   - [ ] Implement basic calculator addition
+   - [ ] Add subtraction functionality
+   - [ ] Handle edge cases for division by zero
+   ```
+
+2. **Use the unified system**: Reference `@unified_tdd_system.md` and type "go" to start each cycle
 
 ## Key Features
 
@@ -129,9 +133,9 @@ This repository contains specialized prompts to guide your Java TDD development:
 
 ## Getting Help
 
-- Read `@prompts/overview.prompt` for detailed workflow guidance
-- Each phase prompt contains specific rules and examples
-- Practice with `@labs/foobarbar-tdd.prompt` to build muscle memory
+- Read `@unified_tdd_system.md` for complete TDD workflow guidance
+- The state machine provides clear instructions for each development phase
+- Follow Kent Beck's TDD principles and "Tidy First" refactoring approach
 
 ## License
 
