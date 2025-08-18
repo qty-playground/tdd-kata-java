@@ -29,6 +29,14 @@ public class PasswordValidatorTest {
     }
 
     @Test
+    void shouldFailOnSpecialCharacter_Test5_Red() {
+        PasswordValidator.ValidationResult result = PasswordValidator.validate("Abcdef12");
+        assertFalse(result.isValid, "Missing special character should be invalid");
+        // Expect the uppercase variant now that the validator message is aligned
+        assertTrue(result.errors.contains("Password must contain at least one special character"));
+    }
+
+    @Test
     void shouldFailOnNumbersCount_Test3() {
         PasswordValidator.ValidationResult result = PasswordValidator.validate("Abcdefgh");
         // Expect invalid due to missing numbers; ensure specific error is present

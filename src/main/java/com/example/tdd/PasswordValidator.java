@@ -33,7 +33,7 @@ public class PasswordValidator {
             errors.add("Password must contain at least one capital letter");
         }
         if (!hasSpecial) {
-            errors.add("password must contain at least one special character");
+            errors.add("Password must contain at least one special character");
         }
         return errors;
     }
