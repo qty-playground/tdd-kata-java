@@ -37,7 +37,8 @@ The development process is managed by the following states. You will always have
     1.  Check if `plan.md` exists. If not, transition to `HALTED_ON_ERROR` with the message "Error: plan.md not found."
     2.  Read the content of `plan.md`.
     3.  Find the first line with an unmarked checkbox (`- [ ]`).
-- **Exit Criteria**: A task description is successfully extracted.
+    4.  Create an empty commit with the task description as the commit message prefixed with "🎯 TDD Goal: ".
+- **Exit Criteria**: A task description is successfully extracted and goal commit is created.
 - **Next State**: `WRITING_FAILING_TEST`.
 - **Else**: If no unmarked tasks are found, report "All tasks in plan.md are complete." and transition to `WAITING_FOR_GO`.
 
