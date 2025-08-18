@@ -20,6 +20,15 @@ public class PasswordValidatorTest {
     }
 
     @Test
+    void shouldFailOnUppercase_Test4_Red() {
+        PasswordValidator.ValidationResult result = PasswordValidator.validate("abcdef12!");
+        // Red phase: test expects uppercase error with a capitalized message
+        // This string is intentionally different from the actual validator message to force Red
+        assertFalse(result.isValid, "Expected invalid due to missing uppercase");
+        assertTrue(result.errors.contains("Password must contain at least one capital letter"));
+    }
+
+    @Test
     void shouldFailOnNumbersCount_Test3() {
         PasswordValidator.ValidationResult result = PasswordValidator.validate("Abcdefgh");
         // Expect invalid due to missing numbers; ensure specific error is present

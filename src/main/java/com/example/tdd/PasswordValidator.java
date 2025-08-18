@@ -30,7 +30,7 @@ public class PasswordValidator {
             errors.add("The password must contain at least 2 numbers");
         }
         if (!hasUpper) {
-            errors.add("password must contain at least one capital letter");
+            errors.add("Password must contain at least one capital letter");
         }
         if (!hasSpecial) {
             errors.add("password must contain at least one special character");
